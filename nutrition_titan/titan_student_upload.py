@@ -13,51 +13,72 @@ import os
 
 ###Set variables for script
 startTime = time.ctime()
-myHostname = "ftp.doe.k12.de.us"
-myUsername = "colonialdata"
+DOEHostname = "ftp.doe.k12.de.us"
+DOEUsername = "colonialdata"
+UMRAHostname = "rcit-umra.redclay.k12.de.us"
+UMRAUsername = "Philip.Smallwood"
 titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
-remoteFilePath = '/Cognos/Titan-en.xlsx'
-localFilePath = './Titan-en.xlsx'
+remoteStudentFilePath = '/Cognos/Titan-en.xlsx'
+localStudentFilePath = './Titan-en.xlsx'
+remoteAllergyFilePath = '/Allergies/StudentAllergies.csv'
+localAllergyFilePath = './Allergies.csv'
 localUpFilePath = './rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
 
 ###Get Titan Cognos Report from DOE SFTP
 ##NOTE: 7/7/2021 - need to change to RedClay instance when have correct access
-with pysftp.Connection(host=myHostname, username=myUsername, password=keyring.get_password("COLDOE", "colonialdata")) as sftp:
-    sftp.get(remoteFilePath, localFilePath)
+with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.get_password("COLDOE", "colonialdata")) as sftp:
+    sftp.get(remoteStudentFilePath, localStudentFilePath)
+    
+###Get Allergies file from UMRA server
+with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyring.get_password("UMRA", "Philip.Smallwood")) as sftp:
+    sftp.get(remoteAllergyFilePath, localAllergyFilePath)
+    
 
-###Read Cognos report 
-df = pd.read_excel("Titan-en.xlsx", dtype=str)
+###Read Cognos report with Student Data to dataframe
+df_students = pd.read_excel("Titan-en.xlsx", dtype=str)
 
-###Re-order the report into the correct order, with an additional field at end to determine program
-df_reorder = df[['Student Id', 'Student First Name', 'Student Middle Name', 'Student Last Name', 'Student Generation', 'Student Id', 'Birthdate', 'Student Gender', 'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', 'Street Addr Line & Apt - Physical', 'City - Physical', 'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', 'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Alternate Building Name']]
+###Read Allergies file to dataframe
+df_allergies = pd.read_csv("Allergies.csv", dtype=str)
+
+###Rename the StudentID field in allergies dataframe
+df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
+
 
 ###Swap Current and Alternate Building for special programs
 ###NOTE: 07/14/2021
 ###Programs Affected - Meadowood and Early Years
 ##Meadowood
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Forest Oak Elementary School', ['Current Building', 'Alternate Building']] = '320240', '320516'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'H.B. duPont Middle School', ['Current Building', 'Alternate Building']] = '320276', '320516'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'McKean High School', ['Current Building', 'Alternate Building']] = '320294', '320516'
+df_students.loc[df_students['Alternate Building Name'] == 'Forest Oak Elementary School', ['Current Building', 'Alternate Building']] = '320240', '320516'
+df_students.loc[df_students['Alternate Building Name'] == 'H.B. duPont Middle School', ['Current Building', 'Alternate Building']] = '320276', '320516'
+df_students.loc[df_students['Alternate Building Name'] == 'McKean High School', ['Current Building', 'Alternate Building']] = '320294', '320516'
 ##Early Years
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Meadowood Program', ['Current Building', 'Alternate Building']] = '320516', '320529'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Mote Elementary School', ['Current Building', 'Alternate Building']] = '320264', '320529'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Richardson Park Learning Center', ['Current Building', 'Alternate Building']] = '320254', '320529'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Warner Elementary School', ['Current Building', 'Alternate Building']] = '320266', '320529'
-df_reorder.loc[df_reorder['Alternate Building Name'] == 'Wm. C. Lewis Dual Language Elem.', ['Current Building', 'Alternate Building']] = '320246', '320529'
+df_students.loc[df_students['Alternate Building Name'] == 'Meadowood Program', ['Current Building', 'Alternate Building']] = '320516', '320529'
+df_students.loc[df_students['Alternate Building Name'] == 'Mote Elementary School', ['Current Building', 'Alternate Building']] = '320264', '320529'
+df_students.loc[df_students['Alternate Building Name'] == 'Richardson Park Learning Center', ['Current Building', 'Alternate Building']] = '320254', '320529'
+df_students.loc[df_students['Alternate Building Name'] == 'Warner Elementary School', ['Current Building', 'Alternate Building']] = '320266', '320529'
+df_students.loc[df_students['Alternate Building Name'] == 'Wm. C. Lewis Dual Language Elem.', ['Current Building', 'Alternate Building']] = '320246', '320529'
 
 ###Drop Z calendar (320888) and First State School (320530) students
-df_no888 = df_reorder[df_reorder['Current Building'] != '320888']
-df_no530or888 = df_no888[df_no888['Current Building'] != '320530']
+df_studentsno888 = df_students[df_students['Current Building'] != '320888']
+df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] != '320530']
 
 ###Drop extra column at the end
 ###Holding on dropping this until 09/01/2021
-df_no530or888.loc[df_no530or888['Alternate Building Name'] != 'a', ['Alternate Building Name']] = '8/31/2021'
-df_final = df_no530or888
+df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a', ['Alternate Building Name']] = '8/31/2021'
+
+
 #df_final = df_no530or888.drop(columns = ['Alternate Building Name'])
 
-###Export to csv
+###Add Allergies into main file
+df_studentallergies = df_studentsno530or888.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
+
+###Reorder to final form
+df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Middle Name', 'Student Last Name', 'Student Generation', 'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', 'Street Addr Line & Apt - Physical', 'City - Physical', 'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', 'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Alternate Building Name']]
+
+
+###Export to data to csv file
 df_final.to_csv("rc_titan_student.csv", index=False)
 
 ###Upload file to Titan
