@@ -25,6 +25,7 @@ remoteAllergyFilePath = '/Allergies/StudentAllergies.csv'
 localAllergyFilePath = './Allergies.csv'
 localUpFilePath = './rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
+logFile = "/var/log/scripts/titan_student_upload.log"
 
 ###Get Titan Cognos Report from DOE SFTP
 ##NOTE: 7/7/2021 - need to change to RedClay instance when have correct access
@@ -37,10 +38,10 @@ with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyrin
     
 
 ###Read Cognos report with Student Data to dataframe
-df_students = pd.read_excel("Titan-en.xlsx", dtype=str)
+df_students = pd.read_excel(localStudentFilePath, dtype=str)
 
 ###Read Allergies file to dataframe
-df_allergies = pd.read_csv("Allergies.csv", dtype=str)
+df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
 
 ###Rename the StudentID field in allergies dataframe
 df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
@@ -79,7 +80,7 @@ df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Mid
 
 
 ###Export to data to csv file
-df_final.to_csv("rc_titan_student.csv", index=False)
+df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
 
@@ -88,12 +89,13 @@ df_final.to_csv("rc_titan_student.csv", index=False)
 
 
 ###Logging
-f = open("titan_student_upload.log", "a")
+f = open(logFile, "a")
 f.write("------------------\n")
 f.write("The Titan student upload script ran on " + startTime + "\n")
 f.write("------------------\n")
 f.close()
 
 ###Remove downloaded files
-#os.remove("Titan-en.csv")
+os.remove(localStudentFilePath)
+os.remove(localAllergyFilePath)
 #os.remove("rc_titan_student.csv")
