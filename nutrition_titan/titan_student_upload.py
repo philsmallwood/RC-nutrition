@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 ###RC Titan Student File Script
 ###Script to generate a student file with the necesary info for nturition
 ###Requires time, pandas, keyring, and pysftp to be installed
 ###For keyring, need to set the username/password for sftp sites for downloads and uploads
+
 
 ###Import Modules
 import pandas as pd
@@ -10,6 +12,10 @@ import pysftp
 import time
 import os
 
+###Change working directory in which script is located
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 ###Set variables for script
 startTime = time.ctime()
@@ -94,6 +100,8 @@ f.write("------------------\n")
 f.write("The Titan student upload script ran on " + startTime + "\n")
 f.write("------------------\n")
 f.close()
+
+###Email Results
 
 ###Remove downloaded files
 os.remove(localStudentFilePath)
