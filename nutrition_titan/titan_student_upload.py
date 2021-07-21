@@ -89,9 +89,8 @@ df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Mid
 df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
-
-#with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANFTP", "RCCSD")) as sftp:
-#    sftp.put(localUpFilePath, remoteUpFilePath)
+with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+    sftp.put(localUpFilePath, remoteUpFilePath)
 
 
 ###Logging
