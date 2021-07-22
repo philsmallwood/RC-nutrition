@@ -101,7 +101,7 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
-os.system("python mailsend.py 'technology@redclay.k12.de.us' 'philip.smallwood@redclay.k12.de.us' 'logFile'")
+os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Remove downloaded files
 os.remove(localStudentFilePath)
