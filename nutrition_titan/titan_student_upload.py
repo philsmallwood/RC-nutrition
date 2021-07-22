@@ -101,6 +101,7 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
+os.system("python mailsend.py 'technology@redclay.k12.de.us' 'philip.smallwood@redclay.k12.de.us' 'logFile'")
 
 ###Remove downloaded files
 os.remove(localStudentFilePath)
