@@ -2,6 +2,7 @@
 
 import sys
 import smtplib
+import os
 
 from email import encoders
 from email.mime.base import MIMEBase
@@ -28,10 +29,7 @@ with open(logfile, "rb") as attachment:
 
 encoders.encode_base64(part)
 
-part.add_header(
-    "Content-Disposition",
-    f"attachment; filename= {logfile}",
-)
+part.add_header("Content-Disposition","attachment", filename=os.path.basename(logfile))
 
 message.attach(part)
 text = message.as_string()
