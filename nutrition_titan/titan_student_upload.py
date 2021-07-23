@@ -20,7 +20,7 @@ os.chdir(dname)
 ###Set variables for script
 startTime = time.ctime()
 DOEHostname = "ftp.doe.k12.de.us"
-DOEUsername = "colonialdata"
+DOEUsername = "RedClayData"
 UMRAHostname = "rcit-umra.redclay.k12.de.us"
 UMRAUsername = "Philip.Smallwood"
 titanHostname = "sftp.titank12.com"
@@ -34,8 +34,7 @@ remoteUpFilePath = '/rc_titan_student.csv'
 logFile = "/var/log/scripts/titan_student_upload.log"
 
 ###Get Titan Cognos Report from DOE SFTP
-##NOTE: 7/7/2021 - need to change to RedClay instance when have correct access
-with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.get_password("COLDOE", "colonialdata")) as sftp:
+with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.get_password("RCDOE", "RedClayData")) as sftp:
     sftp.get(remoteStudentFilePath, localStudentFilePath)
     
 ###Get Allergies file from UMRA server
