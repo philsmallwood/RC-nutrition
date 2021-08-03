@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+###RC Titan Staff File Script
+###Script to generate a student file with the necesary info for nutrition
+###Requires time, pandas, keyring, and pysftp to be installed
+###For keyring, need to set the username/password for sftp sites for downloads and uploads
+
+
+###Import Modules
+import pandas as pd
+import keyring
+import pysftp
+import time
+import os
+
+###Change working directory in which script is located
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
+###Set variables for script
+startTime = time.ctime()
+UMRAHostname = "rcit-umra.redclay.k12.de.us"
+UMRAUsername = "Philip.Smallwood"
+titanHostname = "sftp.titank12.com"
+titanUsername = "RCCSD"
+remoteStaffFilePath = '/Reports/Google_Staff_Dump.csv'
+localStaffFilePath = './Google_Staff_Dump.csv'
+localUpFilePath = './rc_titan_staff.csv'
+remoteUpFilePath = '/rc_titan_staff.csv'
+logFile = "/var/log/scripts/titan_staff_upload.log"
+
+###Get Staff file from UMRA server
+with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyring.get_password("UMRA", "Philip.Smallwood")) as sftp:
+    sftp.get(remoteStaffFilePath, localStaffFilePath)
+    
+###Read Allergies file to dataframe
+df_staff = pd.read_csv(localStaffFilePath, dtype=str)
+
+###Designate StateID as belonging to employee
+###Append 'E' to each EmployeeID
+df_staff['EmployeeID'] = 'E' + df_staff['EmployeeID'].astype(str)
+
+###Add District identifier to each building's code
+df_staff['HR_Location'] = '320' + df_staff['HR_Location'].astype(str)
+
+
+###Reorder to final form
+df_final = df_staff[['EmployeeID', 'FirstName', 'MiddleName', 'LastName', 'Google_Custom_Email', 'EmployeeID', 'Dob', 'HR_Gender', 'HR_Location']]
+
+###Add staff type to dataframe
+###Can be set to 'General' for all non-Nutrition workers
+df_final['StaffType'] = 'General'
+
+###Add Staff Assignment Data
+###For the Summer, all will start on 08/15/2021
+df_final['AssignmentStart'] = '08/15/2021'
+
+###Export to data to csv file
+df_final.to_csv(localUpFilePath, index=False)
+
+###Upload file to Titan
+with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+    sftp.put(localUpFilePath, remoteUpFilePath)
+
+
+###Logging
+f = open(logFile, "a")
+f.write("------------------\n")
+f.write("The Titan staff upload script ran on " + startTime + "\n")
+f.write("------------------\n")
+f.close()
+
+###Email Results
+os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_staff_upload.log' ")
+
+###Remove downloaded files
+os.remove(localStaffFilePath)
+#os.remove("rc_titan_student.csv")
