@@ -11,6 +11,12 @@ import keyring
 import pysftp
 import time
 import os
+import sys
+
+hashseed = os.getenv('PYTHONHASHSEED')
+if not hashseed:
+    os.environ['PYTHONHASHSEED'] = '0'
+    os.execv(sys.executable, [sys.executable] + sys.argv)
 
 ###Change working directory in which script is located
 abspath = os.path.abspath(__file__)
@@ -83,6 +89,8 @@ df_studentallergies = df_studentsno530or888.merge(df_allergies[['Student Id', 'A
 ###Reorder to final form
 df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Middle Name', 'Student Last Name', 'Student Generation', 'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', 'Street Addr Line & Apt - Physical', 'City - Physical', 'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', 'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Alternate Building Name']]
 
+###Create Household ID based on Street Address
+df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].map(hash)
 
 ###Export to data to csv file
 df_final.to_csv(localUpFilePath, index=False)
