@@ -120,4 +120,6 @@ os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Succes
 ###Remove downloaded files
 os.remove(localStudentFilePath)
 os.remove(localAllergyFilePath)
-#os.remove("rc_titan_student.csv")
+
+###Move Uploaded File to archive
+os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
