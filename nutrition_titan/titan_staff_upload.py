@@ -77,4 +77,4 @@ os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'Staff File 
 os.remove(localStaffFilePath)
 
 ###Move Uploaded file to archive
-os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-PayPamsStaffFile.csv"))
+os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStaffFile.csv"))
