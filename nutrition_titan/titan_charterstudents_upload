@@ -1,0 +1,32 @@
+###Charter School File Prep
+###Takes files Karen uploads and gets them ready for import
+###TEMPORARY!! NEED TO GET THIS DATA MORE AUTOMATED
+###Requires that the Y drive (10.222.2.70/RIGHTTrakData) be mounted
+
+###Change to remote nutrition folder
+cd /mnt/nutrition/Titan/dailyenrollment
+
+###Check to see if new enrollment files exist
+if [ ! -f *.txt ]; then
+    exit 111
+fi
+
+###Combine the charter school files into one
+cat *.txt >> combined.csv
+
+###Format the data
+awk -F',' '{print $1","$3","$4","$2","$10"/"$11"/20"$12","$14","$15","$6","$7","$9","$17","$18","$19","$20","$21","$24","$25","$23","$22","$26",08/31/2021"}' combined.csv > charterupload.csv
+
+###Move files to processed folder
+mv *.txt /mnt/nutrition/Titan/dailyenrollment/processed/
+
+SFTP file to Titan
+sshpass -p R3dCl@y3700 sftp RCCSD@sftp.titank12.com <<EOF
+put charterupload.csv
+exit
+EOF
+
+
+###Remove temp files
+rm combined.csv #charterupload.csv 
+
