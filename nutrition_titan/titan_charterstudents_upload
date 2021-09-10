@@ -1,13 +1,32 @@
+#!/bin/bash
+
 ###Charter School File Prep
 ###Takes files Karen uploads and gets them ready for import
 ###TEMPORARY!! NEED TO GET THIS DATA MORE AUTOMATED
 ###Requires that the Y drive (10.222.2.70/RIGHTTrakData) be mounted
 
+###Get Month and Year as a variable for log files
+
+###Set Variables
+LOG="/var/log/scripts/titan_charter_upload.log"
+
+###Begin Log
+echo "---`date`---" >> $LOG
+echo "" >> $LOG
+
+### Set environment to exit out if conditions arent met
+#set -e 
+
 ###Change to remote nutrition folder
 cd /mnt/nutrition/Titan/dailyenrollment
 
 ###Check to see if new enrollment files exist
-if [ ! -f *.txt ]; then
+###Log entry if no file found
+if (echo *.txt | grep -q '*'); then
+    echo "" >> $LOG
+    echo "No enrollment files at this time" >> $LOG
+    echo "" >> $LOG
+    echo "------------------" >> $LOG
     exit 111
 fi
 
@@ -18,15 +37,19 @@ cat *.txt >> combined.csv
 awk -F',' '{print $1","$3","$4","$2","$10"/"$11"/20"$12","$14","$15","$6","$7","$9","$17","$18","$19","$20","$21","$24","$25","$23","$22","$26",08/31/2021"}' combined.csv > charterupload.csv
 
 ###Move files to processed folder
-mv *.txt /mnt/nutrition/Titan/dailyenrollment/processed/
+mv -f *.txt /archive/
 
-SFTP file to Titan
-sshpass -p R3dCl@y3700 sftp RCCSD@sftp.titank12.com <<EOF
-put charterupload.csv
-exit
-EOF
+#SFTP file to Titan
+#sshpass -f /home/philmore/.ssh/.TITAN sftp -o KexAlgorithms=diffie-hellman-group1-sha1 RCCSD@sftp.titank12.com <<EOF
+#put charterupload.csv
+#exit
+#EOF
 
+###Log Entry
+echo "Charter files processed and uploaded to TitanK12" >> $LOG
+echo "" >> $LOG
+echo "------------------" >> $LOG
 
 ###Remove temp files
 rm combined.csv #charterupload.csv 
-
+mv charterupload.csv charterupload-`date %Y%-%m-%d`.csv
