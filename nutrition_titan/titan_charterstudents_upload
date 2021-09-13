@@ -5,11 +5,13 @@
 ###TEMPORARY!! NEED TO GET THIS DATA MORE AUTOMATED
 ###Requires that the Y drive (10.222.2.70/RIGHTTrakData) be mounted
 
-###Get Month and Year as a variable for log files
+###Change to the directory in which the script is running
+cd "$(dirname "$(readlink -f "$0")")"
 
 ###Set Variables
 LOG="/var/log/scripts/titan_charter_upload.log"
 SCRIPTDIR=`pwd`
+
 ###Begin Log
 echo "---`date`---" >> $LOG
 echo "" >> $LOG
