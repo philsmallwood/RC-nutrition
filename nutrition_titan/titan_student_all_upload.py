@@ -99,6 +99,7 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 ###Holding on dropping this until 09/01/2021
 df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a', ['Alternate Building Name']] = '8/31/2021'
 
+###Add students from Secondary Student file that are not in the Titan file
 
 
 #df_final = df_no530or888.drop(columns = ['Alternate Building Name'])
