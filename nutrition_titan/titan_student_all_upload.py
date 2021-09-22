@@ -77,6 +77,7 @@ df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
 ###Rename the StudentID field in allergies dataframe
 df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
 
+
 ###Swap Current and Alternate Building for special programs
 ###NOTE: 07/14/2021
 ###Programs Affected - Meadowood and Early Years
@@ -100,7 +101,7 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a', ['Alternate Building Name']] = '8/31/2021'
 
 ###Add students from Secondary Student file that are not in the Titan file
-
+##df_students_other = df_students_other[df_students_other['Student ID']] != df_studentsno530or888['Student ID']]
 
 #df_final = df_no530or888.drop(columns = ['Alternate Building Name'])
 
