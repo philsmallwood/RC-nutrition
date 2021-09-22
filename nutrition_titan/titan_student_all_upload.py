@@ -69,13 +69,16 @@ with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyrin
 df_students = pd.read_excel(localStudentFilePath, dtype=str)
 
 ##Read Secondary Cognos report with Student Data to dataframe
-df_students_other = pd.read_csv(localSecondaryStudentFilePath, dtype=str)
+df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
 
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
 
 ###Rename the StudentID field in allergies dataframe
 df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
+
+###Rename the StudentID field in Secondary student dataframe
+df_students_other.rename(columns={'Student ID':'Student Id'}, inplace=True)
 
 
 ###Swap Current and Alternate Building for special programs
@@ -102,6 +105,8 @@ df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a
 
 ###Add students from Secondary Student file that are not in the Titan file
 ##df_students_other = df_students_other[df_students_other['Student ID']] != df_studentsno530or888['Student ID']]
+df_students_noguard = (df_students_other[~df_students_other['Student Id'].isin(df_students['Student Id'])])
+
 
 #df_final = df_no530or888.drop(columns = ['Alternate Building Name'])
 
