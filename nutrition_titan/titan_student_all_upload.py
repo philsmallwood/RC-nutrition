@@ -102,14 +102,20 @@ df_students = pd.read_excel(localStudentFilePath, dtype=str)
 df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
 
 ##Combine Charter school files into one file
-os.system("cat *.txt >> combined.csv")
-df_students_charters = pd.read_csv('combined.csv', header=None, dtype=str)
+os.system("cat *.txt >> chartercombined.csv")
+df_students_charters = pd.read_csv('chartercombined.csv', header=None, dtype=str)
 
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
 ###Rename the StudentID field in allergies dataframe
 df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
 #######
+
+###Format Charter schools dataframe###
+# df_students_charters.drop(columns = [27, 28, 29, 30, 31, 32, inplace=True])
+df_students_charters.drop(df_students_charters.iloc[:, 27:33], inplace=True, axis = 1) 
+df_students_charters['Birthdate'] = df_students_charters[9].astype(str) + '/' + df_students_charters[10].astype(str) + '/' + df_students_charters[11].astype(str)
+
 
 ###Format Secondary file###
 ###Rename the columns to match other sources for later merging
@@ -124,7 +130,7 @@ df_students_other.drop(columns = ['Street Address Line 1', 'Street Address Line 
 df_students_noguard = (df_students_other[~df_students_other['Student Id'].isin(df_students['Student Id'])])
 ########
 
-###Format Main Student File###
+###Format Main Student dataframe###
 ###Swap Current and Alternate Building for special programs
 ###NOTE: 07/14/2021
 ###Programs Affected - Meadowood and Early Years
