@@ -38,8 +38,8 @@ UMRAHostname = "rcit-umra.redclay.k12.de.us"
 UMRAUsername = "Philip.Smallwood"
 titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
-NutritionHostname ="10.222.2.70"
-NutritionUsername = "philip.smallwood"
+nutritionHostname ="10.222.2.70"
+nutritionUsername = "philip.smallwood"
 remoteStudentFilePath = '/Cognos/Titan-en.xlsx'
 localStudentFilePath = './Titan-en.xlsx'
 remoteSecondaryStudentFilePath = '/Cognos/SecondaryNutrition-en.csv'
@@ -84,9 +84,15 @@ with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.
 ###Get Allergies file from UMRA server
 with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyring.get_password("UMRA", "Philip.Smallwood")) as sftp:
     sftp.get(remoteAllergyFilePath, localAllergyFilePath)
+###Get Charter School Files
+###NOTE: need to get these streamlined into COGNOS
+with pysftp.Connection(host=nutritionHostname, username=nutritionUsername, password=keyring.get_password('NUTRITIONSERVER', nutritionUsername)) as sftp:
+    sftp.cwd('dailyenrollment')
+    files = sftp.listdir()
+    for file in files: 
+        if (file[-3:]=='txt'):
+            sftp.get(file)
 ######
-
-###Get Charter School files from Nutrition server
 
 ###Read Files into Dataframes###
 ##Read Titan Cognos report with Student Data to dataframe
@@ -95,9 +101,12 @@ df_students = pd.read_excel(localStudentFilePath, dtype=str)
 ##Read Secondary Cognos report with Student Data to dataframe
 df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
 
+##Combine Charter school files into one file
+os.system("cat *.txt >> combined.csv")
+df_students_charters = pd.read_csv('combined.csv', header=None, dtype=str)
+
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
-
 ###Rename the StudentID field in allergies dataframe
 df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
 #######
