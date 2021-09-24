@@ -220,11 +220,12 @@ f.close()
 ###Email Results
 os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
-###Remove downloaded files
-os.remove(localStudentFilePath)
-os.remove(localAllergyFilePath)
-os.remove(localSecondaryStudentFilePath)
-
 ###Move Uploaded File to archive
 os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+
+###Remove downloaded files
+fileToDelete = os.listdir()
+for file in fileToDelete: 
+    if (file[-3:]=='txt') or (file[-3:]=='csv'):
+        os.remove(file)
 ########
