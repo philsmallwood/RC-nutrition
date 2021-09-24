@@ -226,6 +226,6 @@ os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.
 ###Remove downloaded files
 fileToDelete = os.listdir()
 for file in fileToDelete: 
-    if (file[-3:]=='txt') or (file[-3:]=='csv'):
+    if (file[-3:]=='txt') or (file[-3:]=='csv') or (file[-4:]=='xlsx'):
         os.remove(file)
 ########
