@@ -206,8 +206,8 @@ df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
-#with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
-#    sftp.put(localUpFilePath, remoteUpFilePath)
+with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+    sftp.put(localUpFilePath, remoteUpFilePath)
 
 
 ###Logging
@@ -218,13 +218,13 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
-#os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
+os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Remove downloaded files
-#os.remove(localStudentFilePath)
-#os.remove(localAllergyFilePath)
-#os.remove(localSecondaryStudentFilePath)
+os.remove(localStudentFilePath)
+os.remove(localAllergyFilePath)
+os.remove(localSecondaryStudentFilePath)
 
 ###Move Uploaded File to archive
-#os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
 ########
