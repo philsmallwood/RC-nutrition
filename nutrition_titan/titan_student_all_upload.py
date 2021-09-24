@@ -49,9 +49,11 @@ localAllergyFilePath = './Allergies.csv'
 localUpFilePath = './rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
 logFile = "/var/log/scripts/titan_student_upload.log"
+dropColumnsCharter = {4, 7, 9, 10, 11, 12, 15, 16, 17, 26, 27, 28, 29, 30, 31, 32}
 
 ###Set dictionary to rename columns
-colnames = {'Student ID': 'Student Id', 
+###Secondary Dataframe
+colNames = {'Student ID': 'Student Id', 
             'First Name': 'Student First Name', 
             'Last Name': 'Student Last Name', 
             'Middle Name': 'Student Middle Name', 
@@ -70,6 +72,25 @@ colnames = {'Student ID': 'Student Id',
             'Home Phone Number': 'Home Phone', 
             'Guardian Work Phone Number': 'Work Phone', 
             'Email': 'Email - Guardian' }
+
+###Charter Dateframe
+colNamesCharter = { 0 : 'Student Id', 
+            2 : 'Student First Name', 
+            1 : 'Student Last Name', 
+            3 : 'Student Middle Name', 
+            5 : 'Current Building',
+            6 : 'Student Grade', 
+            14 : 'Federal Race Code', 
+            13 : 'Student Gender', 
+            18 : 'City - Physical',
+            19 : 'State - Physical', 
+            20 : 'Zip - Physical', 
+            8 : 'Student Homeroom Primary', 
+            23 : 'First Name - Guardian', 
+            22 : 'Last Name - Guardian',
+            24 : 'Middle Name - Guardian',
+            21 : 'Home Phone', 
+            25 : 'Work Phone'}
 #######
 
 ###Download Files###
@@ -92,6 +113,7 @@ with pysftp.Connection(host=nutritionHostname, username=nutritionUsername, passw
     for file in files: 
         if (file[-3:]=='txt'):
             sftp.get(file)
+            sftp.remove(file)
 ######
 
 ###Read Files into Dataframes###
@@ -112,14 +134,24 @@ df_allergies.rename(columns={'StudentID':'Student Id'}, inplace=True)
 #######
 
 ###Format Charter schools dataframe###
-# df_students_charters.drop(columns = [27, 28, 29, 30, 31, 32, inplace=True])
-df_students_charters.drop(df_students_charters.iloc[:, 27:33], inplace=True, axis = 1) 
-df_students_charters['Birthdate'] = df_students_charters[9].astype(str) + '/' + df_students_charters[10].astype(str) + '/' + df_students_charters[11].astype(str)
+###Create Birthdate column from month, day, year columns
+df_students_charters['Birthdate'] = df_students_charters[9].astype(str) + '/' + df_students_charters[10].astype(str) + '/20' + df_students_charters[11].astype(str)
+###Combine Street Address Line 1 and Apartment to match other sources
+df_students_charters['Street Addr Line & Apt - Physical'] = df_students_charters[[16, 17]].apply(lambda x: ', '.join(x.dropna()), axis=1)
+###Rename the columns to match other sources for later merging
+df_students_charters.rename(columns=colNamesCharter, inplace=True)
+###Drop columns that are not needed
+df_students_charters.drop(columns = dropColumnsCharter, inplace=True)
+###Change Charter Race codes to match Federal Race codes
+df_students_charters.loc[df_students_charters['Federal Race Code'] == '6', ['Federal Race Code']] = '3' #Asian
+df_students_charters.loc[df_students_charters['Federal Race Code'] == '5', ['Federal Race Code']] = '6' #Caucasian
+df_students_charters.loc[df_students_charters['Federal Race Code'] == '2', ['Federal Race Code']] = '4' #Black/African
+df_students_charters.loc[df_students_charters['Federal Race Code'] == '1', ['Federal Race Code']] = '2' #American Indian/Alaskan
 
 
 ###Format Secondary file###
 ###Rename the columns to match other sources for later merging
-df_students_other.rename(columns=colnames, inplace=True)
+df_students_other.rename(columns=colNames, inplace=True)
 ###Add '320' to the building code to match other sources
 df_students_other['Current Building'] = '320' + df_students_other['Current Building'].astype(str)
 ###Combine Street Address Line 1 and Apartment to match other sources
@@ -153,13 +185,14 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a', ['Alternate Building Name']] = '8/31/2021'
 #########
 
-###Add students from Secondary Student file that are not in the Titan file###
+###Add students from Secondary Student and Charter dataframes that are not in the Titan file###
 df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'outer')
+df_students_all = df_students_combined.merge(df_students_charters, how = 'outer')
 ######
 
-###Final Prep and Upload###
+###Final Prep and Upload### 
 ###Add Allergies into main file
-df_studentallergies = df_students_combined.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
+df_studentallergies = df_students_all.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
 
 ###Reorder to final form
 df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Middle Name', 'Student Last Name', 'Student Generation', 'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', 'Street Addr Line & Apt - Physical', 'City - Physical', 'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', 'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Alternate Building Name']]
@@ -173,8 +206,8 @@ df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
-with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
-    sftp.put(localUpFilePath, remoteUpFilePath)
+#with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+#    sftp.put(localUpFilePath, remoteUpFilePath)
 
 
 ###Logging
@@ -185,13 +218,13 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
-os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
+#os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Remove downloaded files
-os.remove(localStudentFilePath)
-os.remove(localAllergyFilePath)
-os.remove(localSecondaryStudentFilePath)
+#os.remove(localStudentFilePath)
+#os.remove(localAllergyFilePath)
+#os.remove(localSecondaryStudentFilePath)
 
 ###Move Uploaded File to archive
-os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+#os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
 ########
