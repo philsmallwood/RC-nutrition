@@ -187,12 +187,12 @@ df_studentsno530or888.loc[df_studentsno530or888['Alternate Building Name'] != 'a
 
 ###Add students from Secondary Student and Charter dataframes that are not in the Titan file###
 df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'outer')
-df_students_all = df_students_combined.merge(df_students_charters, how = 'outer')
+df_students_combined_charters = df_students_combined.merge(df_students_charters, how = 'outer')
 ######
 
 ###Final Prep and Upload### 
 ###Add Allergies into main file
-df_studentallergies = df_students_all.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
+df_studentallergies = df_students_combined_charters.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
 
 ###Reorder to final form
 df_final = df_studentallergies[['Student Id', 'Student First Name', 'Student Middle Name', 'Student Last Name', 'Student Generation', 'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', 'Street Addr Line & Apt - Physical', 'City - Physical', 'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', 'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Alternate Building Name']]
@@ -202,8 +202,16 @@ df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].map(hash)
 ###Make HouseHold ID shorter
 df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 
-###Export to data to csv file
-df_final.to_csv(localUpFilePath, index=False)
+###Section for Urban Promise
+###We sporadically get files from Urban Promise
+###Adding logic to check before adding and exporting
+if os.path.exists('urbanpromise'):
+    df_urbanpromise = pd.read_csv('urbanpromise', dtype=str)
+    df_allstudents = df_final.merge(df_urbanpromise, how = 'outer')
+    df_allstudents.to_csv(localUpFilePath, index=False)
+else:    
+###Export to data to csv file if no urban promise file
+    df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
 with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
@@ -218,10 +226,10 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
-os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
+#os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Move Uploaded File to archive
-os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+#os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
 
 ###Remove downloaded files
 fileToDelete = os.listdir()
