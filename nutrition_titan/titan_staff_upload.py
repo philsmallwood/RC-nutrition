@@ -34,7 +34,7 @@ with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyrin
     sftp.get(remoteStaffFilePath, localStaffFilePath)
     
 ###Read Allergies file to dataframe
-df_staff = pd.read_csv(localStaffFilePath, dtype=str)
+df_staff = pd.read_csv(localStaffFilePath, dtype=str, error_bad_lines=False)
 
 ###Designate StateID as belonging to employee
 ###Append 'E' to each EmployeeID
