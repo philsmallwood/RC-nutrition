@@ -226,7 +226,7 @@ f.write("------------------\n")
 f.close()
 
 ###Email Results
-os.system("python3 mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
+os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Move Uploaded File to archive
 os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
