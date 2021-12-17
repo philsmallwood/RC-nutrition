@@ -11,6 +11,7 @@ import keyring
 import pysftp
 import time
 import os
+import glob
 import sys
 #######
 
@@ -92,6 +93,16 @@ colNamesCharter = { 0 : 'Student Id',
             21 : 'Home Phone', 
             25 : 'Work Phone'}
 #######
+###Charter Dateframe
+colNamesUrbanPromise = { 0: 'Current Building'
+            4 : 'Student Id',
+            1 : 'Student First Name',
+            2 : 'Student Last Name',
+            3 : 'Birthdate',
+            5 : 'Street Addr Line & Apt - Physical',
+            6 : 'City - Physical',
+            7 : 'State - Physical',
+            8 : 'Zip - Physical'}
 
 ###Download Files###
 ###Get Titan Cognos Report from DOE SFTP
@@ -111,7 +122,7 @@ with pysftp.Connection(host=nutritionHostname, username=nutritionUsername, passw
     sftp.cwd('dailyenrollment')
     files = sftp.listdir()
     for file in files: 
-        if (file[-3:]=='txt'):
+        if (file[-3:]=='txt' or file[-3:]=='xls'):
             sftp.get(file)
             sftp.remove(file)
 ######
@@ -126,6 +137,13 @@ df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252'
 ##Combine Charter school files into one file
 os.system("cat *.txt >> chartercombined.csv")
 df_students_charters = pd.read_csv('chartercombined.csv', header=None, dtype=str)
+
+##Rename Urban Promise file to generic name if a new one is there
+if glob.glob('*.xls'):
+    files = os.listdir()
+    for file in files:
+        if (file[-3:]=='xls'):
+            os.rename(file,'urbanpromisecurrent')
 
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
@@ -205,8 +223,12 @@ df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 ###Section for Urban Promise
 ###We sporadically get files from Urban Promise
 ###Adding logic to check before adding and exporting
-if os.path.exists('urbanpromise'):
-    df_urbanpromise = pd.read_csv('urbanpromise', dtype=str)
+if os.path.exists('urbanpromisecurrent'):
+    df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
+    df_urbanpromise[4].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[2], inplace=True)
+    ###Add leading zeros to teacherid to ensure 6 digits exactly
+    df_urbanpromise[4] = df_urbanpromise[4].apply(lambda x: '{0:0>6}'.format(x))
+    df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
     df_allstudents = df_final.merge(df_urbanpromise, how = 'outer')
     df_allstudents.to_csv(localUpFilePath, index=False)
 else:    
