@@ -94,7 +94,7 @@ colNamesCharter = { 0 : 'Student Id',
             25 : 'Work Phone'}
 #######
 ###Charter Dateframe
-colNamesUrbanPromise = { 0: 'Current Building'
+colNamesUrbanPromise = { 0: 'Current Building', 
             4 : 'Student Id',
             1 : 'Student First Name',
             2 : 'Student Last Name',
@@ -228,7 +228,12 @@ if os.path.exists('urbanpromisecurrent'):
     df_urbanpromise[4].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[2], inplace=True)
     ###Add leading zeros to teacherid to ensure 6 digits exactly
     df_urbanpromise[4] = df_urbanpromise[4].apply(lambda x: '{0:0>6}'.format(x))
+    ###Fix date format by making object a 'datetime' format and setting output
+    df_urbanpromise[3] = pd.to_datetime(df_urbanpromise[3])
+    df_urbanpromise[3] = df_urbanpromise[3].dt.strftime('%m/%d/%Y')
+    ###Rename columns for final output
     df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
+    ###Create final dataframe and output
     df_allstudents = df_final.merge(df_urbanpromise, how = 'outer')
     df_allstudents.to_csv(localUpFilePath, index=False)
 else:    
