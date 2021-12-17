@@ -6,31 +6,39 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 ###Variables###
 REMOTEDIR1="dircert"
-KEY="/home/philmore/.ssh/.LOCAL"
-SERVER="10.222.2.70"
+KEYLOCAL="/home/philmore/.ssh/.LOCAL"
+SERVERLOCAL="10.222.2.70"
+KEYREMOTE="/home/philmore/.ssh/.TITAN"
+SERVERREMOTE="sftp.titank12.com"
+FINALFILE="rc-directcert.csv"
 DAY=`date +%Y%m%d`
 MONTHYEAR=`date +%b%Y`
 LOG="/var/log/scripts/nutrition_directcert_$MONTHYEAR.log"
 
 ###Get Direct Cert Files
-sshpass -f $KEY sftp philip.smallwood@$SERVER <<EOF
-cd $REMOTEDIR1
-get *.csv
-get *.txt
-rm *.csv
-rm *.txt
-exit
-EOF
+#sshpass -f $KEY sftp philip.smallwood@$SERVER <<EOF
+#cd $REMOTEDIR1
+#get *.csv
+#get *.txt
+#rm *.csv
+#rm *.txt
+#exit
+#EOF
+
+###If Files exits
+if ls *.csv > /dev/null
+then
+	cat *.csv >> rc-directcert.csv
+fi
+
 ###Convert the direct cert files from UTF-16 to UTF-8 and combine them into one file
-for i in *.txt; do
-	iconv -f UTF-16 -t UTF-8 $i >> combined.txt
-done
-
-for i in *.csv; do 
-	iconv -f UTF-16 -t UTF-8 $i >> combined.txt
-
-###Convert from Tab to Comma
-tr '\t' ',' < combined.txt > rc-directcert.csv
+if ls *.txt > /dev/null
+then
+	for i in *.txt; do
+		iconv -f UTF-16 -t UTF-8 $i >> dircertcombined.txt
+	done
+	tr '\t' ',' < dircertcombined.txt >> rc-directcert.csv
+fi
 
 ###Drop Title Lines 
 sed -i '/District,,,/d' rc-directcert.csv
@@ -43,12 +51,23 @@ sed -i 's/,Y,N,/,SNAP,N,/g' rc-directcert.csv
 sed -i 's/,N,Y,/,TANF,Y,/g' rc-directcert.csv
 sed -i 's/,N,N,/,TANF,N,/g' rc-directcert.csv
 
+###Fix Date format
+sed -i 's/,\ /,/g' rc-directcert.csv
+sed -i 's/\/\ 2/\/2/g' rc-directcert.csv
+
 ###Drop header lables
 sed -i '/SchoolName,Grade/d' rc-directcert.csv
 
+###Get Direct Cert Files
+sshpass -f $KEYREMOTE sftp -oKexAlgorithms=diffie-hellman-group1-sha1 RCCSD@$SERVERREMOTE <<EOF
+put rc-directcert.csv
+exit
+EOF
+
+mv rc-directcert.csv rc-directcertold.csv
 ###Get rid of extra files
-rm combined.txt
-mv *.txt /archive
+#rm combined.txt
+#mv *.txt /archive
 
 
 
