@@ -53,7 +53,8 @@ sed -i 's/,N,N,/,TANF,N,/g' rc-directcert.csv
 
 ###Fix Date format
 sed -i 's/,\ /,/g' rc-directcert.csv
-sed -i 's/\/\ 2/\/2/g' rc-directcert.csv
+sed -i 's/\/2/\/01\/2/g' rc-directcert.csv
+sed -i 's/\/\ 2/\/01\/2/g' rc-directcert.csv
 
 ###Drop header lables
 sed -i '/SchoolName,Grade/d' rc-directcert.csv
@@ -64,7 +65,7 @@ put rc-directcert.csv
 exit
 EOF
 
-mv rc-directcert.csv rc-directcertold.csv
+#mv rc-directcert.csv rc-directcertold.csv
 ###Get rid of extra files
 #rm combined.txt
 #mv *.txt /archive
