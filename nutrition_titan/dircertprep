@@ -1,0 +1,55 @@
+###Nutrition Direct Cert Script 
+###Script to grab the direct certification files, format them, and upload them to Titan
+
+###Change to the directory in which the script is running
+cd "$(dirname "$(readlink -f "$0")")"
+
+###Variables###
+REMOTEDIR1="dircert"
+KEY="/home/philmore/.ssh/.LOCAL"
+SERVER="10.222.2.70"
+DAY=`date +%Y%m%d`
+MONTHYEAR=`date +%b%Y`
+LOG="/var/log/scripts/nutrition_directcert_$MONTHYEAR.log"
+
+###Get Direct Cert Files
+sshpass -f $KEY sftp philip.smallwood@$SERVER <<EOF
+cd $REMOTEDIR1
+get *.csv
+get *.txt
+rm *.csv
+rm *.txt
+exit
+EOF
+###Convert the direct cert files from UTF-16 to UTF-8 and combine them into one file
+for i in *.txt; do
+	iconv -f UTF-16 -t UTF-8 $i >> combined.txt
+done
+
+for i in *.csv; do 
+	iconv -f UTF-16 -t UTF-8 $i >> combined.txt
+
+###Convert from Tab to Comma
+tr '\t' ',' < combined.txt > rc-directcert.csv
+
+###Drop Title Lines 
+sed -i '/District,,,/d' rc-directcert.csv
+sed -i '/School Year/d' rc-directcert.csv
+sed -i '/,,,,,/d' rc-directcert.csv
+
+###Change To SNAP and TANF based on criteria from Nutrition 
+sed -i 's/,Y,Y,/,SNAP,Y,/g' rc-directcert.csv
+sed -i 's/,Y,N,/,SNAP,N,/g' rc-directcert.csv
+sed -i 's/,N,Y,/,TANF,Y,/g' rc-directcert.csv
+sed -i 's/,N,N,/,TANF,N,/g' rc-directcert.csv
+
+###Drop header lables
+sed -i '/SchoolName,Grade/d' rc-directcert.csv
+
+###Get rid of extra files
+rm combined.txt
+mv *.txt /archive
+
+
+
+
