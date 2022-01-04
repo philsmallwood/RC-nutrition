@@ -53,8 +53,13 @@ sed -i 's/,N,N,/,TANF,N,/g' rc-directcert.csv
 
 ###Fix Date format
 sed -i 's/,\ /,/g' rc-directcert.csv
-sed -i 's/\/2/\/01\/2/g' rc-directcert.csv
 sed -i 's/\/\ 2/\/01\/2/g' rc-directcert.csv
+
+###Remove Quotes for 3+ Multi Race students
+ sed -i 's/\"Multi-Racial: .*\"/Multi/g' rc-directcert.csv
+
+###Generate Final File with the 3 pieces of info needed
+awk -F',' '{ printf "%06i,%s,%s\n" , $5 , $10 , $19 }' rc-directcert.csv > dircertupload.csv
 
 ###Drop header lables
 sed -i '/SchoolName,Grade/d' rc-directcert.csv
