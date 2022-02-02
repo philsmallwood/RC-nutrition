@@ -117,7 +117,13 @@ df_students = pd.read_excel(localStudentFilePath, dtype=str)
 df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
 
 ##Combine Charter school files into one file
-os.system("cat *.txt >> chartercombined.csv")
+##Check for charter files and combine if exists
+if glob.glob('*.txt'):
+    os.system("cat *.txt >> chartercombined.csv")
+else:
+    os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'Script Could Not Run - No Charter Files' '/var/log/scripts/titan_student_upload.log' ")
+    exit()
+##Read new chartercombined file into a dataframe
 df_students_charters = pd.read_csv('chartercombined.csv', header=None, dtype=str)
 
 ##Rename Urban Promise file to generic name if a new one is there
