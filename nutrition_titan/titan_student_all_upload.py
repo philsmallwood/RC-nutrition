@@ -33,20 +33,13 @@ os.chdir(dname)
 
 ###Set variables for script###
 startTime = time.ctime()
-DOEHostname = "ftp.doe.k12.de.us"
-DOEUsername = "RedClayData"
-UMRAHostname = "rcit-umra.redclay.k12.de.us"
-UMRAUsername = "Philip.Smallwood"
 titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
 nutritionHostname ="10.222.2.70"
 nutritionUsername = "philip.smallwood"
-remoteStudentFilePath = '/Cognos/Titan-en.xlsx'
-localStudentFilePath = './Titan-en.xlsx'
-remoteSecondaryStudentFilePath = '/Cognos/SecondaryNutrition-en.csv'
-localSecondaryStudentFilePath = './SecondaryNutrition-en.csv'
-remoteAllergyFilePath = '/Allergies/StudentAllergies.csv'
-localAllergyFilePath = './Allergies.csv'
+localStudentFilePath = '/uploads/DOE/Titan-en.xlsx'
+localSecondaryStudentFilePath = '/uploads/DOE/SecondaryNutrition-en.csv'
+localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
 localUpFilePath = './rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
 logFile = "/var/log/scripts/titan_student_upload.log"
@@ -105,17 +98,6 @@ colNamesUrbanPromise = { 0: 'Current Building',
             8 : 'Zip - Physical'}
 
 ###Download Files###
-###Get Titan Cognos Report from DOE SFTP
-with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.get_password("RCDOE", "RedClayData")) as sftp:
-    sftp.get(remoteStudentFilePath, localStudentFilePath)
-
-###Get Secondary Cognos Report from DOE SFTP
-with pysftp.Connection(host=DOEHostname, username=DOEUsername, password=keyring.get_password("RCDOE", "RedClayData")) as sftp:
-    sftp.get(remoteSecondaryStudentFilePath, localSecondaryStudentFilePath) 
-
-###Get Allergies file from UMRA server
-with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyring.get_password("UMRA", "Philip.Smallwood")) as sftp:
-    sftp.get(remoteAllergyFilePath, localAllergyFilePath)
 ###Get Charter School Files
 ###NOTE: need to get these streamlined into COGNOS
 with pysftp.Connection(host=nutritionHostname, username=nutritionUsername, password=keyring.get_password('NUTRITIONSERVER', nutritionUsername)) as sftp:
