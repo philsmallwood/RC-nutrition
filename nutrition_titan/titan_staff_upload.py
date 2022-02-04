@@ -66,8 +66,5 @@ f.close()
 ###Email Results
 os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'Staff File Successfully Uploaded to Titan' '/var/log/scripts/titan_staff_upload.log' ")
 
-###Remove downloaded files
-os.remove(localStaffFilePath)
-
 ###Move Uploaded file to archive
 os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStaffFile.csv"))
