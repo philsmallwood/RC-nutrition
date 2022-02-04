@@ -19,21 +19,14 @@ os.chdir(dname)
 
 ###Set variables for script
 startTime = time.ctime()
-UMRAHostname = "rcit-umra.redclay.k12.de.us"
-UMRAUsername = "Philip.Smallwood"
 titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
-remoteStaffFilePath = '/Reports/Google_Staff_Dump.csv'
-localStaffFilePath = './Google_Staff_Dump.csv'
+localStaffFilePath = '/uploads/DSC/Google/Google_Staff_Dump.csv'
 localUpFilePath = './rc_titan_staff.csv'
 remoteUpFilePath = '/rc_titan_staff.csv'
 logFile = "/var/log/scripts/titan_staff_upload.log"
-
-###Get Staff file from UMRA server
-with pysftp.Connection(host=UMRAHostname, username=UMRAUsername, password=keyring.get_password("UMRA", "Philip.Smallwood")) as sftp:
-    sftp.get(remoteStaffFilePath, localStaffFilePath)
     
-###Read Allergies file to dataframe
+###Read Staff file to dataframe
 df_staff = pd.read_csv(localStaffFilePath, dtype=str, error_bad_lines=False)
 
 ###Designate StateID as belonging to employee
