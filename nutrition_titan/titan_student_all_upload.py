@@ -87,15 +87,17 @@ colNamesCharter = { 0 : 'Student Id',
             25 : 'Work Phone'}
 #######
 ###Charter Dateframe
-colNamesUrbanPromise = { 0: 'Current Building', 
-            4 : 'Student Id',
-            1 : 'Student First Name',
-            2 : 'Student Last Name',
-            3 : 'Birthdate',
-            5 : 'Street Addr Line & Apt - Physical',
-            6 : 'City - Physical',
-            7 : 'State - Physical',
-            8 : 'Zip - Physical'}
+colNamesUrbanPromise = { 0 : 'Current Building', 
+            1 : 'Student Id',
+            2 : 'Student First Name',
+            3 : 'Student Last Name',
+            4 : 'Student Grade'
+            5 : 'Birthdate',
+            6 : 'Allergies'
+            7 : 'Street Addr Line & Apt - Physical',
+            8 : 'City - Physical',
+            9 : 'State - Physical',
+            10 : 'Zip - Physical'}
 
 ###Download Files###
 ###Get Charter School Files
@@ -213,12 +215,12 @@ df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 ###Adding logic to check before adding and exporting
 if os.path.exists('urbanpromisecurrent'):
     df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
-    df_urbanpromise[4].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[2], inplace=True)
+    df_urbanpromise[1].fillna('5544-' + df_urbanpromise[2] + df_urbanpromise[3], inplace=True)
     ###Add leading zeros to teacherid to ensure 6 digits exactly
-    df_urbanpromise[4] = df_urbanpromise[4].apply(lambda x: '{0:0>6}'.format(x))
+    df_urbanpromise[4] = df_urbanpromise[1].apply(lambda x: '{0:0>6}'.format(x))
     ###Fix date format by making object a 'datetime' format and setting output
-    df_urbanpromise[3] = pd.to_datetime(df_urbanpromise[3])
-    df_urbanpromise[3] = df_urbanpromise[3].dt.strftime('%m/%d/%Y')
+    df_urbanpromise[3] = pd.to_datetime(df_urbanpromise[5])
+    df_urbanpromise[3] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
     ###Rename columns for final output
     df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
     ###Create final dataframe and output
