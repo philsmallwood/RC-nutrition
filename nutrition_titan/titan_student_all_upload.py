@@ -217,7 +217,7 @@ if os.path.exists('urbanpromisecurrent'):
     df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
     df_urbanpromise[1].fillna('5544-' + df_urbanpromise[2] + df_urbanpromise[3], inplace=True)
     ###Add leading zeros to teacherid to ensure 6 digits exactly
-    df_urbanpromise[4] = df_urbanpromise[1].apply(lambda x: '{0:0>6}'.format(x))
+    df_urbanpromise[1] = df_urbanpromise[1].apply(lambda x: '{0:0>6}'.format(x))
     ###Fix date format by making object a 'datetime' format and setting output
     df_urbanpromise[5] = pd.to_datetime(df_urbanpromise[5])
     df_urbanpromise[5] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
