@@ -219,8 +219,8 @@ if os.path.exists('urbanpromisecurrent'):
     ###Add leading zeros to teacherid to ensure 6 digits exactly
     df_urbanpromise[4] = df_urbanpromise[1].apply(lambda x: '{0:0>6}'.format(x))
     ###Fix date format by making object a 'datetime' format and setting output
-    df_urbanpromise[3] = pd.to_datetime(df_urbanpromise[5])
-    df_urbanpromise[3] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
+    df_urbanpromise[5] = pd.to_datetime(df_urbanpromise[5])
+    df_urbanpromise[5] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
     ###Rename columns for final output
     df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
     ###Create final dataframe and output
