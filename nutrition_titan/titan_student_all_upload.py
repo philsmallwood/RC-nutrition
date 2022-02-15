@@ -91,9 +91,9 @@ colNamesUrbanPromise = { 0 : 'Current Building',
             1 : 'Student Id',
             2 : 'Student First Name',
             3 : 'Student Last Name',
-            4 : 'Student Grade'
+            4 : 'Student Grade',
             5 : 'Birthdate',
-            6 : 'Allergies'
+            6 : 'Allergies',
             7 : 'Street Addr Line & Apt - Physical',
             8 : 'City - Physical',
             9 : 'State - Physical',
