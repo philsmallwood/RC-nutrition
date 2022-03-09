@@ -175,15 +175,23 @@ df_students_noguard = (df_students_other[~df_students_other['Student Id'].isin(d
 ###NOTE: 07/14/2021
 ###Programs Affected - Meadowood and Early Years
 ##Meadowood
-df_students.loc[df_students['Alternate Building Name'] == 'Forest Oak Elementary School', ['Current Building', 'Alternate Building']] = '320240', '320516'
-df_students.loc[df_students['Alternate Building Name'] == 'H.B. duPont Middle School', ['Current Building', 'Alternate Building']] = '320276', '320516'
-df_students.loc[df_students['Alternate Building Name'] == 'McKean High School', ['Current Building', 'Alternate Building']] = '320294', '320516'
+df_students.loc[(df_students['Alternate Building Name'] == 'Forest Oak Elementary School') & \
+    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320240', '320516'
+df_students.loc[(df_students['Alternate Building Name'] == 'H.B. duPont Middle School') & \
+    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320276', '320516'
+df_students.loc[(df_students['Alternate Building Name'] == 'McKean High School') & \
+    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320294', '320516'
 ##Early Years
-df_students.loc[df_students['Alternate Building Name'] == 'Meadowood Program', ['Current Building', 'Alternate Building']] = '320516', '320529'
-df_students.loc[df_students['Alternate Building Name'] == 'Mote Elementary School', ['Current Building', 'Alternate Building']] = '320264', '320529'
-df_students.loc[df_students['Alternate Building Name'] == 'Richardson Park Learning Center', ['Current Building', 'Alternate Building']] = '320254', '320529'
-df_students.loc[df_students['Alternate Building Name'] == 'Warner Elementary School', ['Current Building', 'Alternate Building']] = '320266', '320529'
-df_students.loc[df_students['Alternate Building Name'] == 'Wm. C. Lewis Dual Language Elem.', ['Current Building', 'Alternate Building']] = '320246', '320529'
+df_students.loc[(df_students['Alternate Building Name'] == 'Meadowood Program') & \
+    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320516', '320529'
+df_students.loc[(df_students['Alternate Building Name'] == 'Mote Elementary School') & \
+    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320264', '320529'
+df_students.loc[(df_students['Alternate Building Name'] == 'Richardson Park Learning Center') & \
+    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320254', '320529'
+df_students.loc[(df_students['Alternate Building Name'] == 'Warner Elementary School') & \
+    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320266', '320529'
+df_students.loc[(df_students['Alternate Building Name'] == 'Wm. C. Lewis Dual Language Elem.') & \
+    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320246', '320529'
 ###Drop Z calendar (320888) and First State School (320530) students
 df_studentsno888 = df_students[df_students['Current Building'] != '320888']
 df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] != '320530']
