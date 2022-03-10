@@ -37,7 +37,7 @@ titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
 nutritionHostname ="10.222.2.70"
 nutritionUsername = "philip.smallwood"
-localStudentFilePath = '/uploads/DOE/Titan-en.xlsx'
+localStudentFilePath = '/uploads/DOE/student_master_primary-en.csv'
 localSecondaryStudentFilePath = '/uploads/DOE/SecondaryNutrition-en.csv'
 localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
 localUpFilePath = './rc_titan_student.csv'
@@ -113,7 +113,7 @@ with pysftp.Connection(host=nutritionHostname, username=nutritionUsername, passw
 
 ###Read Files into Dataframes###
 ##Read Titan Cognos report with Student Data to dataframe
-df_students = pd.read_excel(localStudentFilePath, dtype=str)
+df_students = pd.read_csv(localStudentFilePath, encoding='cp1252', dtype=str)
 
 ##Read Secondary Cognos report with Student Data to dataframe
 df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
