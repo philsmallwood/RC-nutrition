@@ -115,6 +115,7 @@ then
 	#Email and exit
 	python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_EMPTY" "$LOG"
     exit 111
+fi
 
 ###Get Direct Cert Files
 sshpass -f $KEYREMOTE sftp -oKexAlgorithms=diffie-hellman-group1-sha1 RCCSD@$SERVERREMOTE <<EOF
