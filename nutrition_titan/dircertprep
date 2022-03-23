@@ -5,6 +5,9 @@
 ###Change to the directory in which the script is running
 cd "$(dirname "$(readlink -f "$0")")"
 
+###Set environment 
+set -e 
+
 ###Variables###
 DAY=`date +%Y%m%d`
 MONTHYEAR=`date +%b%Y`
@@ -16,7 +19,12 @@ SERVERREMOTE="sftp.titank12.com"
 COMBINEDFILE="rc-directcert.csv"
 FINALFILE="dircertupload.csv"
 ARCHIVEFILE="dircertupload_$MONTHYEAR.csv"
+EMPTYFILE="dircertupload_$MONTHYEAR-EMPTY.csv"
 LOG="/var/log/scripts/nutrition_directcert_$MONTHYEAR.log"
+#Email Variables
+TOEMAIL="philip.smallwood@redclay.k12.de.us"
+SUBJECT_SUCCESS="The Direct Cert script has completed successfully"
+SUBJECT_EMPTY="The Direct Cert file was EMPTY"
 
 ###Start Log
 echo "---`date`---" >> $LOG
@@ -79,6 +87,22 @@ sed -i '/SchoolName,Grade/d' $FINALFILE
 echo "+ File generated for Titan" >> $LOG
 echo "" >> $LOG
 
+###Check for empty file
+if [ ! -s $FINALFILE  ]
+then
+	#Stop, cleanup, archive, finish
+	echo "+ FILE IS EMPTY!!!" >> $LOG
+	mv $FINALFILE $EMPTYFILE
+	mv $EMPTYFILE /archive
+	rm *.csv *.txt
+	#Log
+	echo "+ Finshed " >> $LOG
+	echo "" >> $LOG
+	echo "------------------" >> $LOG
+	#Email and exit
+	python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_EMPTY" "$LOG"
+    exit 111
+
 ###Get Direct Cert Files
 sshpass -f $KEYREMOTE sftp -oKexAlgorithms=diffie-hellman-group1-sha1 RCCSD@$SERVERREMOTE <<EOF
 put $FINALFILE
@@ -97,6 +121,9 @@ rm *.csv *.txt
 echo "+ Finshed " >> $LOG
 echo "" >> $LOG
 echo "------------------" >> $LOG
+
+###Email Log Out
+python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_SUCCESS" "$LOG"
 
 
 
