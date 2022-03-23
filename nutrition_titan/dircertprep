@@ -70,7 +70,7 @@ then
 	#Email and exit
 	python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_EMPTY" "$LOG"
     exit 111
-
+fi
 
 ###Drop Title Lines 
 sed -i '/District,,,/d' $COMBINEDFILE
@@ -88,7 +88,7 @@ sed -i 's/,\ /,/g' $COMBINEDFILE
 sed -i 's/\/\ 2/\/01\/2/g' $COMBINEDFILE
 
 ###Remove Quotes for 3+ Multi Race students
- sed -i 's/\"Multi-Racial: .*\"/Multi/g' $COMBINEDFILE
+sed -i 's/\"Multi-Racial: .*\"/Multi/g' $COMBINEDFILE
 
 ###Generate Final File with the 3 pieces of info needed
 awk -F',' '{ printf "%06i,%s,%s\n" , $5 , $11 , $19 }' $COMBINEDFILE > $FINALFILE
@@ -99,23 +99,6 @@ sed -i '/SchoolName,Grade/d' $FINALFILE
 ###Log
 echo "+ File generated for Titan" >> $LOG
 echo "" >> $LOG
-
-###Check for empty file
-if [ ! -s $FINALFILE  ]
-then
-	#Stop, cleanup, archive, finish
-	echo "+ FILE IS EMPTY!!!" >> $LOG
-	mv $FINALFILE $EMPTYFILE
-	mv $EMPTYFILE /archive
-	rm *.csv *.txt
-	#Log
-	echo "+ Finshed " >> $LOG
-	echo "" >> $LOG
-	echo "------------------" >> $LOG
-	#Email and exit
-	python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_EMPTY" "$LOG"
-    exit 111
-fi
 
 ###Get Direct Cert Files
 sshpass -f $KEYREMOTE sftp -oKexAlgorithms=diffie-hellman-group1-sha1 RCCSD@$SERVERREMOTE <<EOF
@@ -138,7 +121,3 @@ echo "------------------" >> $LOG
 
 ###Email Log Out
 python3 /usr/local/bin/mailsend.py "$TOEMAIL" "$SUBJECT_SUCCESS" "$LOG"
-
-
-
-
