@@ -28,7 +28,7 @@ SUBJECT_EMPTY="The Direct Cert file was EMPTY"
 
 ###Start Log
 echo "---`date`---" >> $LOG
-echo "" $LOG
+echo "" >> $LOG
 
 ###Get Direct Cert Files
 sshpass -f $KEYLOCAL sftp philip.smallwood@$SERVERLOCAL <<EOF
