@@ -218,6 +218,18 @@ df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].map(hash)
 ###Make HouseHold ID shorter
 df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
 
+###Copy Physical Address to Mailing Address if Blank
+df_final['Street Addr Line & Apt - Mailing'].fillna(df_final['Street Addr Line & Apt - Physical'], inplace=True)
+df_final['City - Mailing'].fillna(df_final['City - Physical'], inplace=True)
+df_final['State - Mailing'].fillna(df_final['State - Physical'], inplace=True)
+df_final['Zip - Mailing'].fillna(df_final['Zip - Physical'], inplace=True)
+
+###Fill Guardian Relationship as Guardian if Blank
+df_final['Relation Name - Guardian'].fillna('Guardian', inplace=True)
+
+###Fill Alt Building if Blank
+df_final['Alternate Building Name'].fillna('8/31/2021', inplace=True)
+
 ###Section for Urban Promise
 ###We sporadically get files from Urban Promise
 ###Adding logic to check before adding and exporting
