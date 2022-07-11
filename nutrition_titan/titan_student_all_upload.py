@@ -192,17 +192,19 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 ############
 
 ###Combine all of the Dataframes###
+##Add students from secondary frame to Main
 df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'outer')
+##Add allergies for RC students to Main
+df_students_combined_allergies = df_students_combined.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
+##Add Charter Students to Main
 df_students_combined_charters = df_students_combined.merge(df_students_charters, how = 'outer')
+##Add Urban Promise Students to Main
 df_allstudents = df_students_combined_charters.merge(df_urbanpromise, how = 'outer')
 ############
 
 ###Final Prep and Upload### 
-###Add Allergies into main file
-df_allstudents_allergies = df_allstudents.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
-
 ###Reorder to Final Data Frame
-df_final = df_allstudents_allergies[['Student Id', 'Student First Name', 'Student Middle Name', \
+df_final = df_allstudents[['Student Id', 'Student First Name', 'Student Middle Name', \
     'Student Last Name', 'Student Generation', 'Allergies', 'Birthdate', 'Student Gender', \
     'Federal Race Code', 'Hispanic/Latino Ethnicity', 'Alternate Building', \
     'Current School Year', 'Current Building', 'Student Grade', 'Student Homeroom Primary', \
