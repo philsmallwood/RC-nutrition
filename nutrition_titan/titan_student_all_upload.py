@@ -236,7 +236,7 @@ else:
     df_final['Enrollment Date'] = todayStr
 
 ###Export to data to csv file
-    df_final.to_csv(localUpFilePath, index=False)
+df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
 #with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
