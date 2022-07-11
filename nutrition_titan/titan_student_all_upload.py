@@ -73,7 +73,7 @@ colNamesCharter = { 0 : 'Current Building',
             2 : 'Student Id',
             3 : 'Student Last Name',
             4 : 'Student First Name', 
-            5 : 'Student Last Name', 
+            5 : 'Student Middle Name', 
             7 : 'Student Gender',
             8 : 'Student Homeroom Primary',
             9 : 'Student Grade', 
@@ -194,7 +194,7 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 ###Combine all of the Dataframes###
 df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'outer')
 df_students_combined_charters = df_students_combined.merge(df_students_charters, how = 'outer')
-df_allstudents = df_students_combined_charters(df_urbanpromise, how = 'outer')
+df_allstudents = df_students_combined_charters.merge(df_urbanpromise, how = 'outer')
 ############
 
 ###Final Prep and Upload### 
