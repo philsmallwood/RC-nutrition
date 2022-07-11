@@ -40,7 +40,7 @@ localSecondaryStudentFilePath = '/uploads/DOE/student_master_secondary-en.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
 localUrbanPromiseFilePath = '/RC-scripts/nutrition_titan/urbanpromisecurrent'
 localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
-localUpFilePath = './rc_titan_student.csv'
+localUpFilePath = '/RC-scripts/nutrition_titan/rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
 logFile = "/var/log/scripts/titan_student_upload.log"
 dropColumnsCharter = {1, 6, 10, 11, 13, 15, 16, 19, 20, 30, 31, 32, 33, 34, 35}
@@ -252,7 +252,7 @@ f.close()
 os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Move Uploaded File to archive
-os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+#os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
 
 
 ########
