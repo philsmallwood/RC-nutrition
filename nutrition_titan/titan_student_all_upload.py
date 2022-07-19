@@ -239,8 +239,8 @@ else:
 df_final.to_csv(localUpFilePath, index=False)
 
 ###Upload file to Titan
-#with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
-#    sftp.put(localUpFilePath, remoteUpFilePath)
+with pysftp.Connection(host=titanHostname, username=titanUsername, password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+    sftp.put(localUpFilePath, remoteUpFilePath)
 
 
 ###Logging
@@ -254,7 +254,7 @@ f.close()
 os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
 
 ###Move Uploaded File to archive
-#os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
+os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
 
 
 ########
