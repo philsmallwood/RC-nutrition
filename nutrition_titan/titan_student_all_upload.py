@@ -197,7 +197,7 @@ df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'o
 ##Add allergies for RC students to Main
 df_students_combined_allergies = df_students_combined.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
 ##Add Charter Students to Main
-df_students_combined_charters = df_students_combined.merge(df_students_charters, how = 'outer')
+df_students_combined_charters = df_students_combined_allergies.merge(df_students_charters, how = 'outer')
 ##Add Urban Promise Students to Main
 df_allstudents = df_students_combined_charters.merge(df_urbanpromise, how = 'outer')
 ############
