@@ -146,7 +146,7 @@ df_urbanpromise[3].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[0], inp
 ###Add leading zeros to teacherid to ensure 6 digits exactly
 df_urbanpromise[3] = df_urbanpromise[3].apply(lambda x: '{0:0>6}'.format(x))
 ###Fix date format by making object a 'datetime' format and setting output
-df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[2])
+df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[2], format='%Y-%m-%d %H:%M:%S', errors='coerce')
 df_urbanpromise[2] = df_urbanpromise[2].dt.strftime('%m/%d/%Y')
 ###Rename columns for final output
 df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
