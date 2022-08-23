@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 ###RC Titan Student File Script
 ###Script to generate a student file with the necesary info for nturition
-###Requires time, pandas, keyring, datetime, glob, and pysftp to be installed
+###Requires time, pandas, keyring, datetime, 
+###pysftp, and rcmailsend(self-created package) to be installed
 ###For keyring, need to set the username/password for sftp sites for downloads and uploads
 ###Includes Red Clay and Charter students
 
@@ -13,6 +14,7 @@ import time
 import os
 import sys
 from datetime import date
+from rcmailsend import mail_send #Self Created Module
 #######
 
 ###Turns off the hashseed randomization###
@@ -47,6 +49,9 @@ dropColumnsCharter = {1, 6, 10, 11, 13, 15, 16, 19, 20, 30, 31, 32, 33, 34, 35}
 earliestEnrollmentDate = '08/29/2022'
 today = date.today()
 todayStr = today.strftime("%m/%d/%Y")
+#Mail_send Vars
+logToEmail = 'philip.smallwood@redclay.k12.de.us'
+logSubject = 'Titan Student File Uploaded'
 ###Set dictionary to rename columns
 ##Secondary Dataframe
 colNames = {'Student ID': 'Student Id', 
@@ -141,7 +146,7 @@ df_urbanpromise[3].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[0], inp
 ###Add leading zeros to teacherid to ensure 6 digits exactly
 df_urbanpromise[3] = df_urbanpromise[3].apply(lambda x: '{0:0>6}'.format(x))
 ###Fix date format by making object a 'datetime' format and setting output
-df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[5])
+df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[2])
 df_urbanpromise[2] = df_urbanpromise[2].dt.strftime('%m/%d/%Y')
 ###Rename columns for final output
 df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
@@ -245,8 +250,9 @@ f.write("The Titan student upload script ran on " + startTime + "\n")
 f.write("------------------\n")
 f.close()
 
-###Email Results
-os.system("python3 /usr/local/bin/mailsend.py 'philip.smallwood@redclay.k12.de.us' 'File Successfully Uploaded to Titan' '/var/log/scripts/titan_student_upload.log' ")
+###Email Results###
+mail_send(logToEmail,logSubject,logFile)
+########
 
 ###Move Uploaded File to archive
 os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
