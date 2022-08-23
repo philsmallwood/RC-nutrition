@@ -44,7 +44,7 @@ localUpFilePath = '/RC-scripts/nutrition_titan/rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
 logFile = "/var/log/scripts/titan_student_upload.log"
 dropColumnsCharter = {1, 6, 10, 11, 13, 15, 16, 19, 20, 30, 31, 32, 33, 34, 35}
-earliestEnrollmentDate = '08/31/2022'
+earliestEnrollmentDate = '08/29/2022'
 today = date.today()
 todayStr = today.strftime("%m/%d/%Y")
 ###Set dictionary to rename columns
@@ -91,17 +91,11 @@ colNamesCharter = { 0 : 'Current Building',
             28 : 'Mobile Phone',
             29 : 'Work Phone'}
 ##Urban Promise Dateframe
-colNamesUrbanPromise = { 0 : 'Current Building', 
-            1 : 'Student Id',
-            2 : 'Student First Name',
-            3 : 'Student Last Name',
-            4 : 'Student Grade',
-            5 : 'Birthdate',
-            6 : 'Allergies',
-            7 : 'Street Addr Line & Apt - Physical',
-            8 : 'City - Physical',
-            9 : 'State - Physical',
-            10 : 'Zip - Physical'}
+colNamesUrbanPromise = { 
+            3 : 'Student Id',
+            1 : 'Student First Name',
+            0 : 'Student Last Name',
+            2 : 'Birthdate'}
 ############
 
 #####Read Files into Dataframes#####
@@ -142,12 +136,13 @@ df_students_charters.loc[df_students_charters['Hispanic/Latino Ethnicity'] == 'N
 ############
 
 ###Format Urban Promise dataframe###
-df_urbanpromise[1].fillna('5544-' + df_urbanpromise[2] + df_urbanpromise[3], inplace=True)
+df_urbanpromise['Current Building'] = '5544'
+df_urbanpromise[3].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[0], inplace=True)
 ###Add leading zeros to teacherid to ensure 6 digits exactly
-df_urbanpromise[1] = df_urbanpromise[1].apply(lambda x: '{0:0>6}'.format(x))
+df_urbanpromise[3] = df_urbanpromise[3].apply(lambda x: '{0:0>6}'.format(x))
 ###Fix date format by making object a 'datetime' format and setting output
-df_urbanpromise[5] = pd.to_datetime(df_urbanpromise[5])
-df_urbanpromise[5] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
+df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[5])
+df_urbanpromise[2] = df_urbanpromise[2].dt.strftime('%m/%d/%Y')
 ###Rename columns for final output
 df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
 ############
