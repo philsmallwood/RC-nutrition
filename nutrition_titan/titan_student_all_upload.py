@@ -109,7 +109,7 @@ df_students = pd.read_csv(localStudentFilePath, encoding='cp1252', dtype=str)
 ##Read Secondary Cognos report with Student Data to dataframe
 df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
 ##Read Charter School file into dataframe
-df_students_charters = pd.read_csv(localCharterStudentFilePath, header=None, skiprows=1, dtype=str)
+df_students_charters = pd.read_csv(localCharterStudentFilePath, header=None, skiprows=1, dtype=str, on_bad_lines='skip')
 ##Read Urban Promise file into dataframe
 df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
 ###Read Allergies file to dataframe
