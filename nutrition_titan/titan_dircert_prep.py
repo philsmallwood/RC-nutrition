@@ -131,7 +131,16 @@ for file in localNutritionFiles:
 with pysftp.Connection(host=nutritionServer, username=nutritionUserName, password=keyring.get_password("AD", "philip.smallwood")) as sftp:
     with sftp.cd(nutritionShare):
         for file in dircertFiles:
-            sftp.remove(file)
+            try:
+                sftp.remove(file)
+            except:
+                #Logging###
+                f = open(logFile, "a")
+                f.write("------------------\n")
+                f.write("Not all files could be deleted \n")
+                f.write("------------------\n")
+                f.close()
+                continue
 #Move Final File to Archive with Timestamp
 os.rename(localUpFilePath,archivePath+remoteUpFilePath)
 #Email Log
