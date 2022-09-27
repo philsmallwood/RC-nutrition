@@ -119,7 +119,7 @@ df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252'
 ##Read Charter School file into dataframe
 df_students_charters = pd.read_csv(localCharterStudentFilePath, header=None, skiprows=1, dtype=str, on_bad_lines='skip')
 ##Read Urban Promise file into dataframe
-df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
+df_urbanpromise = pd.read_excel(localUrbanPromiseFilePath, skiprows=1, header=None, dtype=str)
 df_urbanpromise = df_stripper(df_urbanpromise)
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
