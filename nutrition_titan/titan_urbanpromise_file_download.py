@@ -20,7 +20,7 @@ from rcmailsend import mail_send #Self Created Module
 #Date
 startTime = time.ctime()
 today = date.today()
-todayStr = today.strftime("%m/%d/%Y")
+todayStr = today.strftime("%m-%d-%Y")
 #Server Info
 nutritionServer = "10.222.2.70"
 nutritionShare = './dailyenrollment/'
