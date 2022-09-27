@@ -33,7 +33,7 @@ localUpFilePath = '/RC-scripts/nutrition_titan/dircertupload.csv'
 archiveFile = '/archive/urbanpromise-' + todayStr + '.xls'
 #Mail_send Vars
 logToEmail = 'philip.smallwood@redclay.k12.de.us'
-logSubjectNewFile = 'Titan Student File Uploaded'
+logSubjectNewFile = 'New Urban Promise File Downloaded'
 logSubjectNoFile = 'No New Urban Promise File'
 logSubjectProblem = 'Urban Promise File - PROBLEM'
 #######
@@ -61,8 +61,8 @@ urbanPromiseFiles = os.listdir(localNutritionPath)
 if len(urbanPromiseFiles) == 2:
     #Move current file to archive
     os.rename(localNutritionPath+currentUrbanPromiseFile,archiveFile)
-    urbanPromiseFiles = os.listdir(localNutritionPath)
-    os.rename(urbanPromiseFiles[0],localNutritionPath+currentUrbanPromiseFile)
+    urbanPromiseFilesNew = os.listdir(localNutritionPath)
+    os.rename(localNutritionPath+urbanPromiseFilesNew[0],localNutritionPath+currentUrbanPromiseFile)
     #email new file alert
     mail_send(logToEmail,logSubjectNewFile)
 elif len(urbanPromiseFiles) == 1:
