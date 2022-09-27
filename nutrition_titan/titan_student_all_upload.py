@@ -15,6 +15,7 @@ import os
 import sys
 from datetime import date
 from rcmailsend import mail_send #Self Created Module
+from dfcleanup import df_stripper
 #######
 
 ###Turns off the hashseed randomization###
@@ -40,7 +41,7 @@ titanUsername = "RCCSD"
 localStudentFilePath = '/uploads/DOE/student_master_primary-en.csv'
 localSecondaryStudentFilePath = '/uploads/DOE/student_master_secondary-en.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
-localUrbanPromiseFilePath = '/RC-scripts/nutrition_titan/urbanpromisecurrent'
+localUrbanPromiseFilePath = '/uploads/nutrition/urbanpromise/urbanpromisecurrent'
 localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
 localUpFilePath = '/RC-scripts/nutrition_titan/rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
@@ -97,10 +98,17 @@ colNamesCharter = { 0 : 'Current Building',
             29 : 'Work Phone'}
 ##Urban Promise Dateframe
 colNamesUrbanPromise = { 
-            3 : 'Student Id',
-            1 : 'Student First Name',
-            0 : 'Student Last Name',
-            2 : 'Birthdate'}
+            0 : 'Current Building',
+            1 : 'Student Id',
+            2 : 'Student First Name',
+            3 : 'Student Last Name',
+            4 : 'Student Grade',
+            5 : 'Birthdate',
+            6 : 'Allergies',
+            7 : 'Street Addr Line & Apt - Physical',
+            8 : 'City - Physical',
+            9 : 'State - Physical',
+            10 : 'Zip - Physical'}
 ############
 
 #####Read Files into Dataframes#####
@@ -112,6 +120,7 @@ df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252'
 df_students_charters = pd.read_csv(localCharterStudentFilePath, header=None, skiprows=1, dtype=str, on_bad_lines='skip')
 ##Read Urban Promise file into dataframe
 df_urbanpromise = pd.read_excel('urbanpromisecurrent', skiprows=1, header=None, dtype=str)
+df_urbanpromise = df_stripper(df_urbanpromise)
 ###Read Allergies file to dataframe
 df_allergies = pd.read_csv(localAllergyFilePath, dtype=str)
 ###Rename the StudentID field in allergies dataframe
@@ -141,13 +150,16 @@ df_students_charters.loc[df_students_charters['Hispanic/Latino Ethnicity'] == 'N
 ############
 
 ###Format Urban Promise dataframe###
-df_urbanpromise['Current Building'] = '5544'
-df_urbanpromise[3].fillna('5544-' + df_urbanpromise[1] + df_urbanpromise[0], inplace=True)
-###Add leading zeros to teacherid to ensure 6 digits exactly
-df_urbanpromise[3] = df_urbanpromise[3].apply(lambda x: '{0:0>6}'.format(x))
+df_urbanpromise = df_urbanpromise.loc[df_urbanpromise[0] == '5544']
 ###Fix date format by making object a 'datetime' format and setting output
-df_urbanpromise[2] = pd.to_datetime(df_urbanpromise[2], format='%Y-%m-%d %H:%M:%S', errors='coerce')
-df_urbanpromise[2] = df_urbanpromise[2].dt.strftime('%m/%d/%Y')
+df_urbanpromise[5] = pd.to_datetime(df_urbanpromise[5])
+df_urbanpromise[5] = df_urbanpromise[5].dt.strftime('%m/%d/%Y')
+###Add leading zeros to studentID to ensure 6 digits exactly
+df_urbanpromise[1] = df_urbanpromise[1].str.zfill(6)
+###Add leading zeros to Grade to ensure 2 digits exactly
+df_urbanpromise[4] = df_urbanpromise[4].str.zfill(2)
+###Fix Kindergarten Grade
+df_urbanpromise[4] = df_urbanpromise[4].str.replace('0K','KN')
 ###Rename columns for final output
 df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
 ############
