@@ -15,7 +15,7 @@ import os
 import sys
 from datetime import date
 from rcmailsend import mail_send #Self Created Module
-from dfcleanup import df_stripper
+from dfcleanup import df_stripper #Self Created Module
 #######
 
 ###Turns off the hashseed randomization###
@@ -25,13 +25,6 @@ hashseed = os.getenv('PYTHONHASHSEED')
 if not hashseed:
     os.environ['PYTHONHASHSEED'] = '0'
     os.execv(sys.executable, [sys.executable] + sys.argv)
-#######
-
-###Change location###
-###Change to the working directory in which script is located
-abspath = os.path.abspath(__file__)
-dname = os.path.dirname(abspath)
-os.chdir(dname)
 #######
 
 #####Variables#####
