@@ -38,8 +38,7 @@ os.chdir(dname)
 startTime = time.ctime()
 titanHostname = "sftp.titank12.com"
 titanUsername = "RCCSD"
-localStudentFilePath = '/uploads/DOE/student_master_primary-en.csv'
-localSecondaryStudentFilePath = '/uploads/DOE/student_master_secondary-en.csv'
+localStudentFilePath = '/uploads/DOE/StudentAccountCreationFile.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
 localUrbanPromiseFilePath = '/uploads/nutrition/urbanpromise/urbanpromisecurrent'
 localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
@@ -54,26 +53,6 @@ todayStr = today.strftime("%m/%d/%Y")
 logToEmail = 'philip.smallwood@redclay.k12.de.us'
 logSubject = 'Titan Student File Uploaded'
 ###Set dictionary to rename columns
-##Secondary Dataframe
-colNames = {'Student ID': 'Student Id', 
-            'First Name': 'Student First Name', 
-            'Last Name': 'Student Last Name', 
-            'Middle Name': 'Student Middle Name', 
-            'Birth Date': 'Birthdate',
-            'School Code': 'Current Building',
-            'Grade': 'Student Grade', 
-            'Ethnicity': 'Hispanic/Latino Ethnicity', 
-            'Race': 'Federal Race Code', 
-            'Gender': 'Student Gender', 
-            'City': 'City - Physical',
-            'State': 'State - Physical', 
-            'Zip': 'Zip - Physical', 
-            'Homeroom': 'Student Homeroom Primary', 
-            'Guardian First Name': 'First Name - Guardian', 
-            'Guardian Last Name': 'Last Name - Guardian',
-            'Home Phone Number': 'Home Phone', 
-            'Guardian Work Phone Number': 'Work Phone', 
-            'Email': 'Email - Guardian' }
 ##Charter Dateframe
 colNamesCharter = { 0 : 'Current Building', 
             2 : 'Student Id',
@@ -112,12 +91,12 @@ colNamesUrbanPromise = {
 ############
 
 #####Read Files into Dataframes#####
-##Read Main Cognos report with Student Data to dataframe
-df_students = pd.read_csv(localStudentFilePath, encoding='cp1252', dtype=str)
-##Read Secondary Cognos report with Student Data to dataframe
-df_students_other = pd.read_csv(localSecondaryStudentFilePath, encoding='cp1252', dtype=str)
+##Read Student File with Student Data to dataframe
+df_students = pd.read_csv(localStudentFilePath, dtype=str)
+df_students = df_stripper(df_students)
 ##Read Charter School file into dataframe
 df_students_charters = pd.read_csv(localCharterStudentFilePath, header=None, skiprows=1, dtype=str, on_bad_lines='skip')
+df_students_charters = df_stripper(df_students_charters)
 ##Read Urban Promise file into dataframe
 df_urbanpromise = pd.read_excel(localUrbanPromiseFilePath, skiprows=1, header=None, dtype=str)
 df_urbanpromise = df_stripper(df_urbanpromise)
@@ -164,40 +143,7 @@ df_urbanpromise[4] = df_urbanpromise[4].str.replace('0K','KN')
 df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
 ############
 
-###Format Secondary file dataframe###
-###Rename the columns to match other sources for later merging
-df_students_other.rename(columns=colNames, inplace=True)
-###Add '320' to the building code to match other sources
-df_students_other['Current Building'] = '320' + df_students_other['Current Building'].astype(str)
-###Combine Street Address Line 1 and Apartment to match other sources
-df_students_other['Street Addr Line & Apt - Physical'] = df_students_other[['Street Address Line 1', 'Apartment']].apply(lambda x: ', '.join(x.dropna()), axis=1)
-###Drop Address Line 1, Address Line2, and Apartment
-df_students_other.drop(columns = ['Street Address Line 1', 'Street Address Line 1', 'Apartment'], inplace=True)
-###Remove Students from Secondary file that are in the Main file
-df_students_noguard = (df_students_other[~df_students_other['Student Id'].isin(df_students['Student Id'])])
-############
-
 ###Format Main Student dataframe###
-###Swap Current and Alternate Building for special programs
-###Programs Affected - Meadowood and Early Years
-##Meadowood
-df_students.loc[(df_students['Alternate Building'] == '320240') & \
-    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320240', '320516'
-df_students.loc[(df_students['Alternate Building'] == '320276') & \
-    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320276', '320516'
-df_students.loc[(df_students['Alternate Building'] == '320294') & \
-    (df_students['Current Building'] == '320516'), ['Current Building', 'Alternate Building']] = '320294', '320516'
-##Early Years
-df_students.loc[(df_students['Alternate Building'] == '320516') & \
-    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320516', '320529'
-df_students.loc[(df_students['Alternate Building'] == '320264') & \
-    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320264', '320529'
-df_students.loc[(df_students['Alternate Building'] == '320254') & \
-    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320254', '320529'
-df_students.loc[(df_students['Alternate Building'] == '320266') & \
-    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320266', '320529'
-df_students.loc[(df_students['Alternate Building'] == '320246') & \
-    (df_students['Current Building'] == '320529'), ['Current Building', 'Alternate Building']] = '320246', '320529'
 ###Drop Z calendar (320888) and First State School (320530) students
 df_studentsno888 = df_students[df_students['Current Building'] != '320888']
 df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] != '320530']
@@ -205,7 +151,7 @@ df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] !=
 
 ###Combine all of the Dataframes###
 ##Add students from secondary frame to Main
-df_students_combined = df_studentsno530or888.merge(df_students_noguard, how = 'outer')
+df_students_combined = df_studentsno530or888.merge(df_students, how = 'outer')
 ##Add allergies for RC students to Main
 df_students_combined_allergies = df_students_combined.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
 ##Add Charter Students to Main
