@@ -144,10 +144,8 @@ df_studentsno530or888['Current Building'] = '320' + df_studentsno530or888['Curre
 ############
 
 ###Combine all of the Dataframes###
-##Add students from secondary frame to Main
-df_students_combined = df_studentsno530or888.merge(df_students, how = 'outer')
 ##Add allergies for RC students to Main
-df_students_combined_allergies = df_students_combined.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
+df_students_combined_allergies = df_studentsno530or888.merge(df_allergies[['Student Id', 'Allergies']], on = 'Student Id', how = 'left')
 ##Add Charter Students to Main
 df_students_combined_charters = df_students_combined_allergies.merge(df_students_charters, how = 'outer')
 ##Add Urban Promise Students to Main
