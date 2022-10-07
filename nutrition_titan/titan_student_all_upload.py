@@ -140,6 +140,7 @@ df_urbanpromise.rename(columns=colNamesUrbanPromise, inplace=True)
 ###Drop Z calendar (320888) and First State School (320530) students
 df_studentsno888 = df_students[df_students['Current Building'] != '320888']
 df_studentsno530or888 = df_studentsno888[df_studentsno888['Current Building'] != '320530']
+df_studentsno530or888['Current Building'] = '320' + df_studentsno530or888['Current Building']
 ############
 
 ###Combine all of the Dataframes###
