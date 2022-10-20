@@ -166,7 +166,7 @@ df_final = df_allstudents[['Student Id', 'Student First Name', 'Student Middle N
 ###Create Household ID based on Street Address
 df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].map(hash)
 ###Make HouseHold ID shorter
-df_final['HHID'] = df_final['HHID'].astype(str).str[1:9]
+df_final['HHID'] = df_final['HHID'].astype(str).str[1:16]
 
 ###Copy Physical Address to Mailing Address if Blank
 df_final['Street Addr Line & Apt - Mailing'].fillna(df_final['Street Addr Line & Apt - Physical'], inplace=True)
