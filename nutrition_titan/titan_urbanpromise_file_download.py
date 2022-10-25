@@ -39,7 +39,7 @@ logSubjectProblem = 'Urban Promise File - PROBLEM'
 #######
 
 ###Get Urban Promise File###
-#Download any file with .xls or .xlsx extentions
+#Download any file with .xls, .xlsx, or .csv extentions
 #in Dailyenrollment folder on server
 try:
     with pysftp.Connection(host=nutritionServer, username=nutritionUserName, password=keyring.get_password("AD", "philip.smallwood")) as sftp:
@@ -50,6 +50,9 @@ try:
                     sftp.get(file, localNutritionPath + file)
                     sftp.remove(file)
                 elif (file[-4:]=='xlsx'):
+                    sftp.get(file, localNutritionPath + file)
+                    sftp.remove(file)
+                elif (file[-3:]=='csv'):
                     sftp.get(file, localNutritionPath + file)
                     sftp.remove(file)
 except:
