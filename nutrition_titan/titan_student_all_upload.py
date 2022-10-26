@@ -49,7 +49,7 @@ logSubject = 'Titan Student File Uploaded'
 ###Set dictionary to rename columns
 ##Charter Dateframe
 colNamesCharter = { 
-            0 : 'Current Building',
+            0 : 'Student Building',
             2 : 'Student Id',
             3 : 'Student Last Name',
             4 : 'Student First Name', 
@@ -72,7 +72,7 @@ colNamesCharter = {
             29 : 'Work Phone'}
 ##Urban Promise Dateframe
 colNamesUrbanPromise = { 
-            0 : 'Current Building',
+            0 : 'Student Building',
             1 : 'Student Id',
             2 : 'Student First Name',
             3 : 'Student Last Name',
