@@ -65,37 +65,25 @@ try:
     pyscript_call(scriptPath,urbanPromiseFileScript,logFile)
 except:
     log_script_error(urbanPromiseFileScript,logFile)
+###########
 
 ###Student Updater File Generator###
 try:
     pyscript_call(scriptPath,studentFileScript,logFile)
 except:
-    ###Log Error
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write("The " + studentFileScript + " failed! \n")
-    f.write("---\n")
-    f.close()
+    log_script_error(studentFileScript,logFile)
+###########
 
 ###Direct Certification File Generator###
 try:
     pyscript_call(scriptPath,directCertScript,logFile)
 except:
-    ###Log Error
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write("The " + directCertScript + " failed! \n")
-    f.write("---\n")
-    f.close()
+    log_script_error(directCertScript,logFile)
+###########
 
-###Staff Updater  File Generator###
+###Staff Updater File Generator###
 try:
     pyscript_call(scriptPath,staffFileScript,logFile)
 except:
-    ###Log Error
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write("The " + staffFileScript + " failed! \n")
-    f.write("---\n")
-    f.close()
-
+    log_script_error(staffFileScript,logFile)
+###########
