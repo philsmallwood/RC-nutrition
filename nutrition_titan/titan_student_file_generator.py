@@ -8,13 +8,10 @@
 
 ###Import Modules###
 import pandas as pd
-import keyring
-import pysftp
 import time
 import os
 import sys
 from datetime import date
-from rcmailsend import mail_send #Self Created Module
 from dfcleanup import df_stripper #Self Created Module
 #######
 
@@ -28,24 +25,21 @@ if not hashseed:
 #######
 
 #####Variables#####
+#Date
+CurrentDate = date.today()
+Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
-titanHostname = "sftp.titank12.com"
-titanUsername = "RCCSD"
+earliestEnrollmentDate = '08/29/2022'
+#File Locations
 localStudentFilePath = '/uploads/DOE/StudentAccountCreationFile.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
 localUrbanPromiseFilePath = '/uploads/nutrition/urbanpromise/urbanpromisecurrent'
 localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
 localStudentLanguageFilePath = '/uploads/DOE/student_home_lang-en.csv'
-localUpFilePath = '/RC-scripts/nutrition_titan/rc_titan_student.csv'
+localUpFilePath = '/uploads/RC/rc_titan_student.csv'
 remoteUpFilePath = '/rc_titan_student.csv'
-logFile = "/var/log/scripts/titan_student_upload.log"
+logFile = "/var/log/scripts/Titan-" + Date + ".log"
 dropColumnsCharter = {1, 6, 10, 11, 13, 15, 16, 19, 20, 30, 31, 32, 33, 34, 35}
-earliestEnrollmentDate = '08/29/2022'
-today = date.today()
-todayStr = today.strftime("%m/%d/%Y")
-#Mail_send Vars
-logToEmail = 'philip.smallwood@redclay.k12.de.us'
-logSubject = 'Titan Student File Uploaded'
 ###Set dictionary to rename columns
 ##Charter Dateframe
 colNamesCharter = { 
@@ -207,31 +201,13 @@ df_final['Relation Name - Guardian'].fillna('Guardian', inplace=True)
 ###Add Entry Date
 ##Use the earliest Entry Date if it is before that date
 ##Otherwise, use the current date
-if earliestEnrollmentDate > todayStr:
+if earliestEnrollmentDate > Date:
     df_final['Enrollment Date'] = earliestEnrollmentDate
 else:
-    df_final['Enrollment Date'] = todayStr
+    df_final['Enrollment Date'] = Date
 
 ###Export to data to csv file
 df_final.to_csv(localUpFilePath, index=False)
-
-###Upload file to Titan
-with pysftp.Connection(host=titanHostname, username=titanUsername, \
-    password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
-    sftp.put(localUpFilePath, remoteUpFilePath)
+############
 
 
-###Logging
-f = open(logFile, "a")
-f.write("------------------\n")
-f.write("The Titan student upload script ran on " + startTime + "\n")
-f.write("------------------\n")
-f.close()
-
-###Email Results###
-mail_send(logToEmail,logSubject,logFile)
-########
-
-###Move Uploaded File to archive
-os.rename(localUpFilePath,time.strftime("/archive/%Y%m%d%H%M%S-TitanStudentFile.csv"))
-########
