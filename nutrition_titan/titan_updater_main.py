@@ -7,7 +7,8 @@
 # titan_files_download.py
 # titan_student_file_generator.py
 # titan_dircert_file_prep.py
-# titan_staff_upload.py
+# titan_staff_file_generator.py
+# titan_files_upload.py
 
 ###Import Modules###
 import time
@@ -26,11 +27,11 @@ scriptPath = '/RC-scripts/nutrition_titan/'
 sourceFilesScript = 'titan_files_download.py'
 studentFileScript = 'titan_student_file_generator.py'
 directCertScript = 'titan_dircert_file_prep.py'
-staffFileScript = 'titan_staff_upload.py'
-uploadscript = 'classlink_upload.py'
+staffFileScript = 'titan_staff_file_generator.py'
+titanFileUploadScript = 'titan_files_upload.py'
 #Email Vars
 logToEmail = 'philip.smallwood@redclay.k12.de.us'
-logSubject = 'Titan Updates Log'
+logSubject = 'Titan Updater Log'
 logFile = "/var/log/scripts/Titan-" + Date + ".log"
 ##Function Definitions
 #Function to call a python script and append info to a log file
@@ -95,11 +96,6 @@ except:
     log_script_error(titanFileUploadScript,logFile)
 ###########
 
-
-#
-titanHostname = "sftp.titank12.com"
-titanUsername = "RCCSD"
-###Upload file to Titan
-with pysftp.Connection(host=titanHostname, username=titanUsername, \
-    password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
-    sftp.put(localUpFilePath, remoteUpFilePath)
+###Email Results###
+mail_send(logToEmail,logSubject,logFile)
+########
