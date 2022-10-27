@@ -56,22 +56,51 @@ try:
         password=keyring.get_password("AD", "philip.smallwood")) as sftp:
         with sftp.cd(nutritionDailyShare):
             dailyFiles = sftp.listdir()
-            for file in dailyFiles:
-                if (file[-3:]=='xls'):
-                    sftp.get(file, localNutritionUrbanPromisePath + file)
-                    sftp.remove(file)
-                elif (file[-4:]=='xlsx'):
-                    sftp.get(file, localNutritionUrbanPromisePath + file)
-                    sftp.remove(file)
-                elif (file[-3:]=='csv'):
-                    sftp.get(file, localNutritionUrbanPromisePath + file)
-                    sftp.remove(file)
-    #Logging
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write("Urban Promise File Downloaded or No File from PCS Server \n")
-    f.write("------------------\n")
-    f.close()
+            if dailyFiles:
+                for file in dailyFiles:
+                    if (file[-3:]=='xls'):
+                        sftp.get(file, localNutritionUrbanPromisePath + file)
+                        try:
+                            sftp.remove(file)
+                        except:
+                            f = open(logFile, "a")
+                            f.write("------------------\n")
+                            f.write("Cannot Remove File \n")
+                            f.write("------------------\n")
+                            f.close()
+                    elif (file[-4:]=='xlsx'):
+                        sftp.get(file, localNutritionUrbanPromisePath + file)
+                        try:
+                            sftp.remove(file)
+                        except:
+                            f = open(logFile, "a")
+                            f.write("------------------\n")
+                            f.write("Cannot Remove File \n")
+                            f.write("------------------\n")
+                            f.close()
+                    elif (file[-3:]=='csv'):
+                        sftp.get(file, localNutritionUrbanPromisePath + file)
+                        try:
+                            sftp.remove(file)
+                        except:
+                            f = open(logFile, "a")
+                            f.write("------------------\n")
+                            f.write("Cannot Remove File \n")
+                            f.write("------------------\n")
+                            f.close()
+                    #Logging
+                    f = open(logFile, "a")
+                    f.write("------------------\n")
+                    f.write("Urban Promise File Downloaded from PCS Server \n")
+                    f.write("------------------\n")
+                    f.close()
+            else:
+                #Logging
+                f = open(logFile, "a")
+                f.write("------------------\n")
+                f.write("No New Urban Promise File on PCS Server \n")
+                f.write("------------------\n")
+                f.close()
 except:
     #Logging Error
     f = open(logFile, "a")
@@ -91,17 +120,41 @@ try:
         password=keyring.get_password("AD", "philip.smallwood")) as sftp:
         with sftp.cd(nutritionDirCertShare):
             dircertFiles = sftp.listdir()
-            for file in dircertFiles:
-                if (file[-3:]=='txt'):
-                    sftp.get(file, localNutritionDirCertPath + file)
-                elif (file[-3:]=='csv'):
-                    sftp.get(file, localNutritionDirCertPath + file)
-    #Logging
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write("Direct Cert Files Downloaded from PCS Server or No New File \n")
-    f.write("------------------\n")
-    f.close()
+            if dircertFiles:
+                for file in dircertFiles:
+                    if (file[-3:]=='txt'):
+                        sftp.get(file, localNutritionDirCertPath + file)
+                        try:
+                            sftp.remove(file)
+                        except:
+                            f = open(logFile, "a")
+                            f.write("------------------\n")
+                            f.write("Cannot Remove File \n")
+                            f.write("------------------\n")
+                            f.close()
+                    elif (file[-3:]=='csv'):
+                        sftp.get(file, localNutritionDirCertPath + file)
+                        try:
+                            sftp.remove(file)
+                        except:
+                            f = open(logFile, "a")
+                            f.write("------------------\n")
+                            f.write("Cannot Remove File \n")
+                            f.write("------------------\n")
+                            f.close()
+                #Logging
+                f = open(logFile, "a")
+                f.write("------------------\n")
+                f.write("Direct Cert Files Downloaded from PCS Server \n")
+                f.write("------------------\n")
+                f.close()
+            else:
+                #Logging
+                f = open(logFile, "a")
+                f.write("------------------\n")
+                f.write("No New Direct Cert Files on PCS Server \n")
+                f.write("------------------\n")
+                f.close()              
 except:
     #Logging
     f = open(logFile, "a")

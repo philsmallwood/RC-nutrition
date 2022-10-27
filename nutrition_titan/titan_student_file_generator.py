@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-###RC Titan Student File Script
+###RC Titan Student File Generator Script
 ###Script to generate a student file with the necesary info for nturition
-###Requires time, pandas, keyring, datetime, 
-###pysftp, and rcmailsend(self-created package) to be installed
-###For keyring, need to set the username/password for sftp sites for downloads and uploads
+###Requires time, pandas, datetime, 
+###and rcmailsend(self-created package) to be installed
 ###Includes Red Clay and Charter students
 
 ###Import Modules###
