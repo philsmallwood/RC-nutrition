@@ -78,6 +78,8 @@ df_final = df_staff_all[['EmployeeID', 'FirstName', 'MiddleName', \
 df_final['StaffType'] = 'General'
 ###Add Staff Assignment Date (Current Date)
 df_final['AssignmentStart'] = Date
+###Drop Staff with No Location
+df_final = df_final[df_final['HR_Location'] != '320']
 ###Export to data to csv file
 df_final.to_csv(localUpFilePath, index=False)
 #######
