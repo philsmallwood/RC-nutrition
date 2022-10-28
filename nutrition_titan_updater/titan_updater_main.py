@@ -14,25 +14,28 @@
 import time
 import datetime
 import os
+from dotenv import load_dotenv
 from rcmailsend import mail_send #Self Created Module
 #######
 
 ###Variables###
+#Load .ENV File
+load_dotenv()
 #Date
 CurrentDate = datetime.date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
 #Scripts
-scriptPath = '/scripts/RC-nutrition/nutrition_titan_updater/'
+scriptPath = os.getenv('scriptPath')
 sourceFilesScript = 'titan_files_download.py'
 studentFileScript = 'titan_student_file_generator.py'
 directCertScript = 'titan_dircert_file_prep.py'
 staffFileScript = 'titan_staff_file_generator.py'
 titanFileUploadScript = 'titan_files_upload.py'
 #Email Vars
-logToEmail = 'philip.smallwood@redclay.k12.de.us'
+logToEmail = os.getenv('logToEmail')
 logSubject = 'Titan Updater Log'
-logFile = "/var/log/scripts/Titan-" + Date + ".log"
+logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
 ##Function Definitions
 #Function to call a python script and append info to a log file
 def pyscript_call(scriptPath,scriptName,logFile):

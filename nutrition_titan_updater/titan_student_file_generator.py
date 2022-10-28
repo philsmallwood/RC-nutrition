@@ -11,6 +11,7 @@ import time
 import os
 import sys
 from datetime import date
+from dotenv import load_dotenv
 from dfcleanup import df_stripper #Self Created Module
 #######
 
@@ -24,6 +25,8 @@ if not hashseed:
 #######
 
 #####Variables#####
+#Load .ENV File
+load_dotenv()
 #Date
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
@@ -31,14 +34,13 @@ StudentDate = CurrentDate.strftime('%m/%d/%Y')
 startTime = time.ctime()
 earliestEnrollmentDate = '08/29/2022'
 #File Locations
-localStudentFilePath = '/uploads/DOE/StudentAccountCreationFile.csv'
-localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
-localUrbanPromiseFilePath = '/uploads/nutrition/urbanpromise/urbanpromisecurrent'
-localAllergyFilePath = '/uploads/DSC/Allergies/StudentAllergies.csv'
-localStudentLanguageFilePath = '/uploads/DOE/student_home_lang-en.csv'
-localUpFilePath = '/uploads/RC/rc_titan_student.csv'
-remoteUpFilePath = '/rc_titan_student.csv'
-logFile = "/var/log/scripts/Titan-" + Date + ".log"
+localStudentFilePath = os.getenv('localStudentFilePath')
+localCharterStudentFilePath = os.getenv('localCharterStudentFilePath')
+localUrbanPromiseFilePath = os.getenv('localUrbanPromiseFilePath')
+localAllergyFilePath = os.getenv('localAllergyFilePath')
+localStudentLanguageFilePath = os.getenv('localStudentLanguageFilePath')
+localUpFilePath = os.getenv('localUpStudentFilePath')
+logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
 dropColumnsCharter = {1, 6, 10, 11, 13, 15, 16, 19, 20, 30, 31, 32, 33, 34, 35}
 ###Set dictionary to rename columns
 ##Charter Dateframe

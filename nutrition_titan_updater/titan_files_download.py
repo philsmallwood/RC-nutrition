@@ -15,28 +15,32 @@ import time
 import os
 import sys
 from datetime import date
+from dotenv import load_dotenv
 from rcmailsend import mail_send #Self Created Module
 #######
 
 #region Variable and Function Defs
 #####Variables#####
+#Load .ENV File
+load_dotenv()
 #Date
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
 #Server Info
-nutritionServer = "10.222.2.70"
-nutritionDailyShare = './dailyenrollment/'
-nutritionDirCertShare = './dircert/'
-nutritionUserName = 'philip.smallwood'
+nutritionServer = os.getenv('nutritionServer')
+nutritionDailyShare = os.getenv('nutritionDailyShare')
+nutritionDirCertShare = os.getenv('nutritionDirCertShare')
+nutritionUserName = os.getenv('nutritionUserName')
+nutritionServiceName = os.getenv('nutritionServiceName')
 #File Vars
-localNutritionUrbanPromisePath = '/uploads/nutrition/urbanpromise/'
-localNutritionDirCertPath = '/uploads/nutrition/dircert'
-currentUrbanPromiseFile = 'urbanpromisecurrent'
-archiveFile = '/archive/urbanpromise-' + Date + '.xls'
+localNutritionUrbanPromisePath = os.getenv('localNutritionUrbanPromisePath')
+localNutritionDirCertPath = os.getenv('localNutritionDirCertPath')
+currentUrbanPromiseFile = os.getenv('currentUrbanPromiseFile')
+archiveFile = os.getenv('localArchivePath') + 'urbanpromise-' + Date + '.xls'
 #Mail_send Vars
-logFile = "/var/log/scripts/Titan-" + Date + ".log"
-logToEmail = 'philip.smallwood@redclay.k12.de.us'
+logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
+logToEmail = os.getenv('logToEmail')
 logNewFile = 'New Urban Promise File Downloaded'
 logNoFile = 'No New Urban Promise File'
 logProblem = 'Urban Promise File - PROBLEM!!'
@@ -68,7 +72,7 @@ def log_script_error_cannotremove(logFile):
 #in Dailyenrollment Folder on Server
 try:
     with pysftp.Connection(host=nutritionServer, username=nutritionUserName, \
-        password=keyring.get_password("AD", "philip.smallwood")) as sftp:
+        password=keyring.get_password(nutritionServiceName, nutritionUserName)) as sftp:
         with sftp.cd(nutritionDailyShare):
             dailyFiles = sftp.listdir()
             if dailyFiles:
@@ -117,7 +121,7 @@ except:
 #Dircert Folder on Server
 try:
     with pysftp.Connection(host=nutritionServer, username=nutritionUserName, \
-        password=keyring.get_password("AD", "philip.smallwood")) as sftp:
+        password=keyring.get_password(nutritionServiceName, nutritionUserName)) as sftp:
         with sftp.cd(nutritionDirCertShare):
             dircertFiles = sftp.listdir()
             if dircertFiles:

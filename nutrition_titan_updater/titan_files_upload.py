@@ -12,20 +12,24 @@ import re
 import pysftp
 import time
 import keyring
+from dotenv import load_dotenv
 from datetime import date
 import os
 #######
 
 
 ###Variables
+#Load .ENV File
+load_dotenv()
 #Date
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
-logFile = "/var/log/scripts/Titan-" + Date + ".log"
+logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
 #Titan SFTP Vars
-titanHostname = "sftp.titank12.com"
-titanUsername = "RCCSD"
+titanHostname = os.getenv('titanHostname')
+titanUsername = os.getenv('titanUsername')
+titanServiceName = os.getenv('titanServiceName')
 #Files
 uploadFiles = ['/uploads/RC/rc_titan_student.csv',
     '/uploads/RC/rc_titan_staff.csv',
@@ -34,7 +38,7 @@ uploadFiles = ['/uploads/RC/rc_titan_student.csv',
 
 ###Upload Files to Classlink
 with pysftp.Connection(host=titanHostname, username=titanUsername, \
-    password=keyring.get_password("TITANK12", "RCCSD")) as sftp:
+    password=keyring.get_password(titanServiceName, titanHostname)) as sftp:
     for upFile in uploadFiles:
         sftp.put(upFile,upFile.split('/')[-1])
 #######

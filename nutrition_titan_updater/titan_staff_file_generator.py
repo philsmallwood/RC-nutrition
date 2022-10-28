@@ -8,19 +8,24 @@
 ###Import Modules
 import pandas as pd
 from datetime import date
+import os
+from dotenv import load_dotenv
 from dfcleanup import df_stripper #Self Created Module
 #######
 
 
 ###Variables###
+#Load .ENV File
+load_dotenv()
 #Date
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
+StaffDate = CurrentDate.strftime('%m/%d/%Y')
 #Files
-localStaffFile = '/uploads/DSC/HR/RedClayStaff.csv'
-localStaffEmailFile = '/uploads/RC/staffIDtoGoogle.csv'
-localContractorFile = '/uploads/RC/Contractor_Phone.csv'
-localUpFilePath = '/uploads/RC/rc_titan_staff.csv'
+localStaffFile = os.getenv('localStaffFile')
+localStaffEmailFile = os.getenv('localStaffEmailFile')
+localContractorFile = os.getenv('localContractorFile')
+localUpFilePath = os.getenv('localUpStaffFilePath')
 ###Set Dictionaries to Rename Columns
 colNamesStaff = { 0 : 'EmployeeID', 
             1 : 'LastName',
@@ -76,8 +81,8 @@ df_final = df_staff_all[['EmployeeID', 'FirstName', 'MiddleName', \
 ###Add staff type to dataframe
 #Can be set to 'General' for all non-Nutrition workers
 df_final['StaffType'] = 'General'
-###Add Staff Assignment Date (Current Date)
-df_final['AssignmentStart'] = Date
+###Add Staff Assignment Date (Staff Date)
+df_final['AssignmentStart'] = StaffDate
 ###Drop Staff with No Location
 df_final = df_final[df_final['HR_Location'] != '320']
 ###Export to data to csv file

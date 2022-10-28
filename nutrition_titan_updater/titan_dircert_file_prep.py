@@ -9,22 +9,25 @@ import pandas as pd
 import time
 import os
 import sys
+from dotenv import load_dotenv
 from datetime import date
 #######
 
 #####Variables#####
+#Load .ENV File
+load_dotenv()
 #Date
 startTime = time.ctime()
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 #File Vars
-localNutritionDirCertPath = '/uploads/nutrition/dircert/'
-archivePath ='/archive/'
-localUpFilePath = '/uploads/RC/dircertupload.csv'
-archiveDirCertFile = '/archive/dircertupload-' + Date + '.csv'
+localNutritionDirCertPath = os.getenv('localNutritionDirCertPath')
+archivePath = os.getenv('localArchivePath')
+localUpFilePath = os.getenv('localUpDirCertFilePath')
+archiveDirCertFile = archivePath + 'dircertupload-' + Date + '.csv'
 df_dircerts = pd.DataFrame()
 #Log
-logFile = "/var/log/scripts/Titan-" + Date + ".log"
+logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
 #######
 
 ###Read Direct Cert Files into a Dataframe###
