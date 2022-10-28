@@ -27,8 +27,9 @@ if not hashseed:
 #Date
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
+StudentDate = CurrentDate.strftime('%m/%d/%Y')
 startTime = time.ctime()
-earliestEnrollmentDate = '08-29-2022'
+earliestEnrollmentDate = '08/29/2022'
 #File Locations
 localStudentFilePath = '/uploads/DOE/StudentAccountCreationFile.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
@@ -200,10 +201,10 @@ df_final['Relation Name - Guardian'].fillna('Guardian', inplace=True)
 ###Add Entry Date
 ##Use the earliest Entry Date if it is before that date
 ##Otherwise, use the current date
-if earliestEnrollmentDate > Date:
+if earliestEnrollmentDate > StudentDate:
     df_final['Enrollment Date'] = earliestEnrollmentDate
 else:
-    df_final['Enrollment Date'] = Date
+    df_final['Enrollment Date'] = StudentDate
 
 ###Export to data to csv file
 df_final.to_csv(localUpFilePath, index=False)
