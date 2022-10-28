@@ -43,6 +43,23 @@ logNewFile = 'New Urban Promise File Downloaded'
 logNoFile = 'No New Urban Promise File'
 logProblem = 'Urban Promise File - PROBLEM!!'
 logSubjectProblem = 'Urban Promise File - PROBLEM!!'
+###Functions
+#Log Successful File Download
+def log_file_download(logFile,fileName):
+    #Write the Error to the Log
+    f = open(logFile, "a")
+    f.write("------------------\n")
+    f.write(fileName + " File Downloaded from PCS Server \n")
+    f.write("------------------\n")
+    f.close()
+#Log Cannot Remove File
+def log_script_error_cannotremove(logFile):
+    #Write the Error to the Log
+    f = open(logFile, "a")
+    f.write("------------------\n")
+    f.write("Cannot Remove File \n")
+    f.write("------------------\n")
+    f.close()
 #######
 #endregion Variable and Function Defs
 
@@ -60,40 +77,25 @@ try:
                 for file in dailyFiles:
                     if (file[-3:]=='xls'):
                         sftp.get(file, localNutritionUrbanPromisePath + file)
+                        log_file_download(logFile,"Urban Promise")
                         try:
                             sftp.remove(file)
                         except:
-                            f = open(logFile, "a")
-                            f.write("------------------\n")
-                            f.write("Cannot Remove File \n")
-                            f.write("------------------\n")
-                            f.close()
+                            log_script_error_cannotremove(logFile)
                     elif (file[-4:]=='xlsx'):
                         sftp.get(file, localNutritionUrbanPromisePath + file)
+                        log_file_download(logFile,"Urban Promise")
                         try:
                             sftp.remove(file)
                         except:
-                            f = open(logFile, "a")
-                            f.write("------------------\n")
-                            f.write("Cannot Remove File \n")
-                            f.write("------------------\n")
-                            f.close()
+                            log_script_error_cannotremove(logFile)
                     elif (file[-3:]=='csv'):
                         sftp.get(file, localNutritionUrbanPromisePath + file)
+                        log_file_download(logFile,"Urban Promise")
                         try:
                             sftp.remove(file)
                         except:
-                            f = open(logFile, "a")
-                            f.write("------------------\n")
-                            f.write("Cannot Remove File \n")
-                            f.write("------------------\n")
-                            f.close()
-                    #Logging
-                    f = open(logFile, "a")
-                    f.write("------------------\n")
-                    f.write("Urban Promise File Downloaded from PCS Server \n")
-                    f.write("------------------\n")
-                    f.close()
+                            log_script_error_cannotremove(logFile)
             else:
                 #Logging
                 f = open(logFile, "a")
@@ -124,30 +126,18 @@ try:
                 for file in dircertFiles:
                     if (file[-3:]=='txt'):
                         sftp.get(file, localNutritionDirCertPath + file)
+                        log_file_download(logFile,"DirCert")
                         try:
                             sftp.remove(file)
                         except:
-                            f = open(logFile, "a")
-                            f.write("------------------\n")
-                            f.write("Cannot Remove File \n")
-                            f.write("------------------\n")
-                            f.close()
+                            log_script_error_cannotremove(logFile)
                     elif (file[-3:]=='csv'):
                         sftp.get(file, localNutritionDirCertPath + file)
+                        log_file_download(logFile,"DirCert")
                         try:
                             sftp.remove(file)
                         except:
-                            f = open(logFile, "a")
-                            f.write("------------------\n")
-                            f.write("Cannot Remove File \n")
-                            f.write("------------------\n")
-                            f.close()
-                #Logging
-                f = open(logFile, "a")
-                f.write("------------------\n")
-                f.write("Direct Cert Files Downloaded from PCS Server \n")
-                f.write("------------------\n")
-                f.close()
+                            log_script_error_cannotremove(logFile)
             else:
                 #Logging
                 f = open(logFile, "a")
