@@ -28,7 +28,7 @@ if not hashseed:
 CurrentDate = date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
-earliestEnrollmentDate = '08/29/2022'
+earliestEnrollmentDate = '08-29-2022'
 #File Locations
 localStudentFilePath = '/uploads/DOE/StudentAccountCreationFile.csv'
 localCharterStudentFilePath = '/uploads/DSC/Follet/destinystudentsCharter.csv'
