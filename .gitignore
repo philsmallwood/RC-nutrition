@@ -1,0 +1,11 @@
+.VMWARE
+gmail_token.json
+client_secret.json
+.UMRA
+*log*
+vminventory-*.csv
+.DS_Store
+__pycache__
+dist
+build
+*.egg-info
