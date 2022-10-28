@@ -23,7 +23,7 @@ CurrentDate = datetime.date.today()
 Date = CurrentDate.strftime('%m-%d-%Y')
 startTime = time.ctime()
 #Scripts
-scriptPath = '/RC-scripts/nutrition_titan/'
+scriptPath = '/scripts/RC-nutrition/nutrition_titan_updater/'
 sourceFilesScript = 'titan_files_download.py'
 studentFileScript = 'titan_student_file_generator.py'
 directCertScript = 'titan_dircert_file_prep.py'

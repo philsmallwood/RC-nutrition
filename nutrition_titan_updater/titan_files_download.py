@@ -33,8 +33,6 @@ nutritionUserName = 'philip.smallwood'
 localNutritionUrbanPromisePath = '/uploads/nutrition/urbanpromise/'
 localNutritionDirCertPath = '/uploads/nutrition/dircert'
 currentUrbanPromiseFile = 'urbanpromisecurrent'
-archivePath ='/archive/'
-localUpFilePath = '/RC-scripts/nutrition_titan/dircertupload.csv'
 archiveFile = '/archive/urbanpromise-' + Date + '.xls'
 #Mail_send Vars
 logFile = "/var/log/scripts/Titan-" + Date + ".log"
