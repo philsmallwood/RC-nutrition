@@ -1,0 +1,42 @@
+[Main]
+scriptPath = 'LOCATION OF SCRIPTS'
+logFilePath = 'LOG DIRECTORY'
+[Server]
+nutritionServer = "SERVER IP OR NAME"
+nutritionDailyShare = './SHAREFOLDER'
+nutritionDirCertShare = './SHAREFOLDER'
+nutritionUserName = 'USERNAME'
+nutritionServiceName = 'SERVICE NAME'
+[SFTP]
+titanHostname = "SERVER IP OR NAME"
+titanUsername = "USERNAME"
+titanServiceName = 'SERVICE NAME'
+[Mail]
+logToEmail = 'EMAIL ADDRESS'
+[FilePaths]
+localNutritionFilePath = 'DIRECTORY'
+localDSCFilePath = 'DIRECTORY'
+localDOEFilePath = 'DIRECTORY'
+localRCFilePath = 'DIRECTORY'
+localArchivePath ='DIRECTORY'
+localNutritionUrbanPromisePath = ${localNutritionFilePath}DIRECTORY/
+localNutritionDirCertPath = ${localNutritionFilePath}DIRECTORY
+currentUrbanPromiseFile = 'FILE NAME'
+[StudentFile]
+localStudentFilePath = ${localDOEFilePath}FILENAME
+localCharterStudentFilePath = ${localDSCFilePath}FILENAME
+localUrbanPromiseFilePath = ${localNutritionUrbanPromisePath}${currentUrbanPromiseFile}
+localAllergyFilePath = ${localDSCFilePath}FILENAME
+localStudentLanguageFilePath = ${localDOEFilePath}FILENAME
+localUpStudentFilePath = ${localRCFilePath}FILENAME
+[Staff]
+localStaffFile = ${localDSCFilePath}FILENAME
+localStaffEmailFile = ${localRCFilePath}FILENAME
+localContractorFile = ${localRCFilePath}FILENAME
+localUpStaffFilePath = ${localRCFilePath}FILENAME
+[DirectCert]
+localUpDirCertFilePath = ${localRCFilePath}FILENAME
+
+
+
+
