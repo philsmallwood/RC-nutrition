@@ -31,14 +31,14 @@ titanHostname = os.getenv('titanHostname')
 titanUsername = os.getenv('titanUsername')
 titanServiceName = os.getenv('titanServiceName')
 #Files
-uploadFiles = ['/uploads/RC/rc_titan_student.csv',
-    '/uploads/RC/rc_titan_staff.csv',
-    '/uploads/RC/dircertupload.csv']
+uploadFiles = [os.getenv('localUpStudentFilePath'),
+    os.getenv('localUpDirCertFilePath'),
+    os.getenv('localUpStaffFilePath')]
 #######
 
 ###Upload Files to Classlink
 with pysftp.Connection(host=titanHostname, username=titanUsername, \
-    password=keyring.get_password(titanServiceName, titanHostname)) as sftp:
+    password=keyring.get_password(titanServiceName, titanUsername)) as sftp:
     for upFile in uploadFiles:
         sftp.put(upFile,upFile.split('/')[-1])
 #######
