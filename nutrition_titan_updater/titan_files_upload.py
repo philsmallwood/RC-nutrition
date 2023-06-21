@@ -3,7 +3,7 @@
 ### Titan Nutrition Management System
 ### For keyring, need to set the username/password for sftp sites for downloads and uploads
 
-def titan_files_download():
+def titan_files_upload():
     ###Import Modules
     import pysftp
     import time
