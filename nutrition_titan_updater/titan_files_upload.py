@@ -1,55 +1,48 @@
-#!/usr/bin/env python3
 ### RC Titan Files Upload
 ### Script to upload files the newest to 
 ### Titan Nutrition Management System
-### Requires time, pandas, keyring, datetime, 
-###pysftp
-###For keyring, need to set the username/password for sftp sites for downloads and uploads
+### For keyring, need to set the username/password for sftp sites for downloads and uploads
 
 
 ###Import Modules
-import re
 import pysftp
 import time
 import keyring
 from dotenv import load_dotenv
 from datetime import date
-import os
+from os import getenv
 #######
-
 
 ###Variables
 #Load .ENV File
 load_dotenv()
 #Date
-CurrentDate = date.today()
-Date = CurrentDate.strftime('%m-%d-%Y')
-startTime = time.ctime()
-logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
+current_date = date.today()
+date_str = current_date.strftime('%m-%d-%Y')
+start_time = time.ctime()
+log_entry = str()
 #Titan SFTP Vars
-titanHostname = os.getenv('titanHostname')
-titanUsername = os.getenv('titanUsername')
-titanServiceName = os.getenv('titanServiceName')
+titan_hostname = getenv('titanHostname')
+titan_username = getenv('titanUsername')
+titan_service_name = getenv('titanServiceName')
 #Files
-uploadFiles = [os.getenv('localUpStudentFilePath'),
-    os.getenv('localUpDirCertFilePath'),
-    os.getenv('localUpStaffFilePath')]
+upload_files = [getenv('localUpStudentFilePath'),
+    getenv('localUpDirCertFilePath'),
+    getenv('localUpStaffFilePath')]
 #######
 
 ###Upload Files to Classlink
-with pysftp.Connection(host=titanHostname, username=titanUsername, \
-    password=keyring.get_password(titanServiceName, titanUsername)) as sftp:
-    for upFile in uploadFiles:
-        sftp.put(upFile,upFile.split('/')[-1])
+with pysftp.Connection(host=titan_hostname, username=titan_username, \
+    password=keyring.get_password(titan_service_name, titan_username)) as sftp:
+    for up_file in upload_files:
+        sftp.put(up_file,up_file.split('/')[-1])
 #######
 
 ###Logging
-f = open(logFile, "a")
-f.write("------------------\n")
-f.write("The following files were uploaded to Titan on " + startTime + ": \n\n")
-for upFile in uploadFiles:
-    f.write(upFile.split('/')[-1] + "\n")
-f.write("------------------\n")
-f.close()
+log_entry += "------------------\n"
+log_entry += f"The following files were uploaded to Titan on {start_time}: \n\n"
+for up_file in upload_files:
+    log_entry += up_file.split('/')[-1] + "\n"
+log_entry += "------------------\n"
 #######
 
