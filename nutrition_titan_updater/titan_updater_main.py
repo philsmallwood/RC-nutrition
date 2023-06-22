@@ -17,6 +17,11 @@ from pathlib import Path
 from datetime import date
 from os import getenv
 from dotenv import load_dotenv
+from titan_files_upload import titan_files_upload
+from titan_student_file_generator import titan_student_file_generator
+from titan_staff_file_generator import titan_staff_file_generator
+from titan_dircert_file_prep import titan_dircert_file_prep
+from titan_files_download import titan_files_download
 from rc_google_py import write_log_to_google,login_google_service_account
 from rcmailsend import mail_send #Self Created Module
 #######
@@ -29,14 +34,8 @@ current_date = date.today()
 date_str = current_date.strftime('%m-%d-%Y')
 start_time = time.ctime()
 #Scripts
-script_path = getenv('scriptPath')
-source_files_script = 'titan_files_download.py'
-student_files_script = 'titan_student_file_generator.py'
-direct_cert_script = 'titan_dircert_file_prep.py'
-staff_file_script = 'titan_staff_file_generator.py'
-titan_file_upload_script = 'titan_files_upload.py'
-script_list = [source_files_script, student_files_script,
-    direct_cert_script, staff_file_script, titan_file_upload_script]
+script_list = [titan_files_download, titan_student_file_generator,
+    titan_dircert_file_prep, titan_staff_file_generator, titan_files_upload]
 #Google Info
 google_auth_key = getenv('GoogleAuthKey')
 network_team_drive_id = getenv('NetworkTeamDriveID')
@@ -80,7 +79,7 @@ log_file += "---\n"
 ###Call the Scripts###
 for sub_script in script_list:
     try:
-        pyscript_call(script_path, sub_script)
+        log_file += sub_script()
         log_file += log_script_var(sub_script)
     except:
         log_script_error_var(sub_script)
