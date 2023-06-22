@@ -4,190 +4,170 @@
 ### the student file for Urban Promise Charter
 ### and the Direct Certification Files from the 
 ### Nutrition Server
-###Requires time, pandas, keyring, datetime, 
-###pysftp, and rcmailsend(self-created package) to be installed
-###For keyring, need to set the username/password for sftp sites for downloads and uploads
+### For keyring, need to set the username/password for sftp sites for downloads and uploads
 
-###Import Modules###
-import keyring
-import pysftp
-import time
-import os
-import sys
-from datetime import date
-from dotenv import load_dotenv
-from rcmailsend import mail_send #Self Created Module
-#######
+def titan_files_download():
+    ###Import Modules###
+    import keyring
+    import pysftp
+    import time
+    from os import getenv,listdir,rename
+    from datetime import date
+    from dotenv import load_dotenv
+    from rcmailsend import mail_send #Self Created Module
+    #######
 
-#region Variable and Function Defs
-#####Variables#####
-#Load .ENV File
-load_dotenv()
-#Date
-CurrentDate = date.today()
-Date = CurrentDate.strftime('%m-%d-%Y')
-startTime = time.ctime()
-#Server Info
-nutritionServer = os.getenv('nutritionServer')
-nutritionDailyShare = os.getenv('nutritionDailyShare')
-nutritionDirCertShare = os.getenv('nutritionDirCertShare')
-nutritionUserName = os.getenv('nutritionUserName')
-nutritionServiceName = os.getenv('nutritionServiceName')
-#File Vars
-localNutritionUrbanPromisePath = os.getenv('localNutritionUrbanPromisePath')
-localNutritionDirCertPath = os.getenv('localNutritionDirCertPath')
-currentUrbanPromiseFile = os.getenv('currentUrbanPromiseFile')
-archiveFile = os.getenv('localArchivePath') + 'urbanpromise-' + Date + '.xls'
-#Mail_send Vars
-logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
-logToEmail = os.getenv('logToEmail')
-logNewFile = 'New Urban Promise File Downloaded'
-logNoFile = 'No New Urban Promise File'
-logProblem = 'Urban Promise File - PROBLEM!!'
-logSubjectProblem = 'Urban Promise File - PROBLEM!!'
-###Functions
-#Log Successful File Download
-def log_file_download(logFile,fileName):
-    #Write the Error to the Log
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write(fileName + " File Downloaded from PCS Server \n")
-    f.write("------------------\n")
-    f.close()
-#Log Cannot Remove File
-def log_script_error_cannotremove(logFile):
-    #Write the Error to the Log
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write("Cannot Remove File \n")
-    f.write("------------------\n")
-    f.close()
-#######
-#endregion Variable and Function Defs
+    #region Variable and Function Defs
+    #####Variables#####
+    #Load .ENV File
+    load_dotenv()
+    #Date
+    current_date = date.today()
+    date_str = current_date.strftime('%m-%d-%Y')
+    #Server Info
+    nutrition_server = getenv('nutritionServer')
+    nutrition_daily_share = getenv('nutritionDailyShare')
+    nutrition_direct_cert_share = getenv('nutritionDirCertShare')
+    nutrition_user_name = getenv('nutritionUserName')
+    nutrition_service_name = getenv('nutritionServiceName')
+    #File Vars
+    nutrition_urban_promise_path = getenv('localNutritionUrbanPromisePath')
+    nutrition_direct_cert_path = getenv('localNutritionDirCertPath')
+    current_urban_promise_file = getenv('currentUrbanPromiseFile')
+    archive_file = getenv('localArchivePath') + 'urbanpromise-' + date_str + '.xls'
+    #Mail_send Vars
+    log_entry = str()
+    log_to_email = getenv('logToEmail')
+    log_new_file = 'New Urban Promise File Downloaded'
+    log_no_file = 'No New Urban Promise File'
+    log_problem = 'Urban Promise File - PROBLEM!!'
+    subject_problem = 'Urban Promise File - PROBLEM!!'
+    ###Functions
+    #Log Successful File Download
+    def log_file_download(log_entry,fileName):
+        #Write the Error to the Log
+        log_entry += "------------------\n"
+        log_entry += f"{fileName} File Downloaded from PCS Server \n"
+        log_entry += "------------------\n"
+    #Log Cannot Remove File
+    def log_script_error_cannot_remove(log_entry):
+        #Write the Error to the Log
+        log_entry += "------------------\n"
+        log_entry += "Cannot Remove File \n"
+        log_entry += "------------------\n"
+    #######
+    #endregion Variable and Function Defs
 
 
-#region Download Urban Promise File
-###Get Urban Promise File###
-#Download Files with .xls, .xlsx, or .csv Extentions
-#in Dailyenrollment Folder on Server
-try:
-    with pysftp.Connection(host=nutritionServer, username=nutritionUserName, \
-        password=keyring.get_password(nutritionServiceName, nutritionUserName)) as sftp:
-        with sftp.cd(nutritionDailyShare):
-            dailyFiles = sftp.listdir()
-            if dailyFiles:
-                for file in dailyFiles:
-                    if (file[-3:]=='xls'):
-                        sftp.get(file, localNutritionUrbanPromisePath + file)
-                        log_file_download(logFile,"Urban Promise")
-                        try:
-                            sftp.remove(file)
-                        except:
-                            log_script_error_cannotremove(logFile)
-                    elif (file[-4:]=='xlsx'):
-                        sftp.get(file, localNutritionUrbanPromisePath + file)
-                        log_file_download(logFile,"Urban Promise")
-                        try:
-                            sftp.remove(file)
-                        except:
-                            log_script_error_cannotremove(logFile)
-                    elif (file[-3:]=='csv'):
-                        sftp.get(file, localNutritionUrbanPromisePath + file)
-                        log_file_download(logFile,"Urban Promise")
-                        try:
-                            sftp.remove(file)
-                        except:
-                            log_script_error_cannotremove(logFile)
-            else:
-                #Logging
-                f = open(logFile, "a")
-                f.write("------------------\n")
-                f.write("No New Urban Promise File on PCS Server \n")
-                f.write("------------------\n")
-                f.close()
-except:
-    #Logging Error
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write("Problem Connecting to Server to Download Urban Promise File \n")
-    f.write("------------------\n")
-    f.close()
-#######
-#endregion Download Urban Promise File
+    #region Download Urban Promise File
+    ###Get Urban Promise File###
+    #Download Files with .xls, .xlsx, or .csv Extentions
+    #in Dailyenrollment Folder on Server
+    try:
+        with pysftp.Connection(host=nutrition_server, username=nutrition_user_name, \
+            password=keyring.get_password(nutrition_service_name, nutrition_user_name)) as sftp:
+            with sftp.cd(nutrition_daily_share):
+                dailyFiles = sftp.listdir()
+                if dailyFiles:
+                    for file in dailyFiles:
+                        if (file[-3:]=='xls'):
+                            sftp.get(file, nutrition_urban_promise_path + file)
+                            log_file_download(log_entry,"Urban Promise")
+                            try:
+                                sftp.remove(file)
+                            except:
+                                log_script_error_cannot_remove(log_entry)
+                        elif (file[-4:]=='xlsx'):
+                            sftp.get(file, nutrition_urban_promise_path + file)
+                            log_file_download(log_entry,"Urban Promise")
+                            try:
+                                sftp.remove(file)
+                            except:
+                                log_script_error_cannot_remove(log_entry)
+                        elif (file[-3:]=='csv'):
+                            sftp.get(file, nutrition_urban_promise_path + file)
+                            log_file_download(log_entry,"Urban Promise")
+                            try:
+                                sftp.remove(file)
+                            except:
+                                log_script_error_cannot_remove(log_entry)
+                else:
+                    #Logging
+                    log_entry += "------------------\n"
+                    log_entry += "No New Urban Promise File on PCS Server \n"
+                    log_entry += "------------------\n"
+    except:
+        #Logging Error
+        log_entry += "------------------\n"
+        log_entry += "Problem Connecting to Server to Download Urban Promise File \n"
+        log_entry += "------------------\n"
+    #######
+    #endregion Download Urban Promise File
 
-#region Download Direct Certification Files
-###Get Direct Cert Files###
-#Download Files with .txt or .csv Extentions in 
-#Dircert Folder on Server
-try:
-    with pysftp.Connection(host=nutritionServer, username=nutritionUserName, \
-        password=keyring.get_password(nutritionServiceName, nutritionUserName)) as sftp:
-        with sftp.cd(nutritionDirCertShare):
-            dircertFiles = sftp.listdir()
-            if dircertFiles:
-                for file in dircertFiles:
-                    if (file[-3:]=='txt'):
-                        sftp.get(file, localNutritionDirCertPath + file)
-                        log_file_download(logFile,"DirCert")
-                        try:
-                            sftp.remove(file)
-                        except:
-                            log_script_error_cannotremove(logFile)
-                    elif (file[-3:]=='csv'):
-                        sftp.get(file, localNutritionDirCertPath + file)
-                        log_file_download(logFile,"DirCert")
-                        try:
-                            sftp.remove(file)
-                        except:
-                            log_script_error_cannotremove(logFile)
-            else:
-                #Logging
-                f = open(logFile, "a")
-                f.write("------------------\n")
-                f.write("No New Direct Cert Files on PCS Server \n")
-                f.write("------------------\n")
-                f.close()              
-except:
-    #Logging
-    f = open(logFile, "a")
-    f.write("------------------\n")
-    f.write("Problem Connecting to Server to Download Direct Cert Files \n")
-    f.write("------------------\n")
-    f.close()
-####### 
-#endregion Download Direct Certification Files
+    #region Download Direct Certification Files
+    ###Get Direct Cert Files###
+    #Download Files with .txt or .csv Extentions in 
+    #Dircert Folder on Server
+    try:
+        with pysftp.Connection(host=nutrition_server, username=nutrition_user_name, \
+            password=keyring.get_password(nutrition_service_name, nutrition_user_name)) \
+            as sftp:
+            with sftp.cd(nutrition_direct_cert_share):
+                dircertFiles = sftp.listdir()
+                if dircertFiles:
+                    for file in dircertFiles:
+                        if (file[-3:]=='txt'):
+                            sftp.get(file, nutrition_direct_cert_path + file)
+                            log_file_download(log_entry,"DirCert")
+                            try:
+                                sftp.remove(file)
+                            except:
+                                log_script_error_cannot_remove(log_entry)
+                        elif (file[-3:]=='csv'):
+                            sftp.get(file, nutrition_direct_cert_path + file)
+                            log_file_download(log_entry,"DirCert")
+                            try:
+                                sftp.remove(file)
+                            except:
+                                log_script_error_cannot_remove(log_entry)
+                else:
+                    #Logging
+                    log_entry +="------------------\n"
+                    log_entry +="No New Direct Cert Files on PCS Server \n"
+                    log_entry +="------------------\n"
+    except:
+        #Logging
+        log_entry +="------------------\n"
+        log_entry +="Problem Connecting to Server to Download Direct Cert Files \n"
+        log_entry +="------------------\n"
+    ####### 
+    #endregion Download Direct Certification Files
 
-#region Process Urban Promise File
-###Make New File Current and Backup Old File###
-urbanPromiseFiles = os.listdir(localNutritionUrbanPromisePath)
-if len(urbanPromiseFiles) == 2:
-    #Move current file to archive
-    os.rename(localNutritionUrbanPromisePath+currentUrbanPromiseFile,archiveFile)
-    urbanPromiseFilesNew = os.listdir(localNutritionUrbanPromisePath)
-    os.rename(localNutritionUrbanPromisePath+urbanPromiseFilesNew[0],localNutritionUrbanPromisePath+currentUrbanPromiseFile)
-    #Write entry to log
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write(logNewFile + " \n")
-    f.write("---\n")
-    f.close()
-elif len(urbanPromiseFiles) == 1:
-    #Write Entry to Log
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write(logNoFile + " \n")
-    f.write("---\n")
-    f.close()
-else:
-    #Write Entry to Log
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write(logProblem + " \n")
-    f.write("---\n")
-    f.close()
-    #Email Alert of Problem
-    mail_send(logToEmail,logSubjectProblem)
-#endregion Process Urban Promise File
+    #region Process Urban Promise File
+    ###Make New File Current and Backup Old File###
+    urbanPromiseFiles = listdir(nutrition_urban_promise_path)
+    if len(urbanPromiseFiles) == 2:
+        #Move current file to archive
+        rename(nutrition_urban_promise_path+current_urban_promise_file,archive_file)
+        urbanPromiseFilesNew = listdir(nutrition_urban_promise_path)
+        rename(nutrition_urban_promise_path+urbanPromiseFilesNew[0],\
+            nutrition_urban_promise_path+current_urban_promise_file)
+        #Write entry to log
+        log_entry += "---\n"
+        log_entry += f"{log_new_file}\n"
+        log_entry += "---\n"
+    elif len(urbanPromiseFiles) == 1:
+        #Write Entry to Log
+        log_entry += "---\n"
+        log_entry += f"{log_no_file}\n"
+        log_entry += "---\n"
+    else:
+        #Write Entry to Log
+        log_entry += "---\n"
+        log_entry += f"{log_problem}\n"
+        log_entry += "---\n"
+        #Email Alert of Problem
+        mail_send(log_to_email,subject_problem)
+    #endregion Process Urban Promise File
 
-
-
+    return log_entry
