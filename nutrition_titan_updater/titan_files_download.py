@@ -33,7 +33,7 @@ def titan_files_download():
     current_urban_promise_file = getenv('current_urban_promise_file')
     archive_file = getenv('archive_path') + 'urbanpromise-' + date_str + '.xls'
     #Mail_send Vars
-    log_entry = str()
+    log_file_entry = str()
     log_to_email = getenv('log_to_email')
     log_new_file = 'New Urban Promise File Downloaded'
     log_no_file = 'No New Urban Promise File'
@@ -68,35 +68,35 @@ def titan_files_download():
                     for file in daily_nutrition_files:
                         if (file[-3:]=='xls'):
                             sftp.get(file, nutrition_urban_promise_path + file)
-                            log_file_download(log_entry,"Urban Promise")
+                            log_file_download(log_file_entry,"Urban Promise")
                             try:
                                 sftp.remove(file)
                             except:
-                                log_script_error_cannot_remove(log_entry)
+                                log_script_error_cannot_remove(log_file_entry)
                         elif (file[-4:]=='xlsx'):
                             sftp.get(file, nutrition_urban_promise_path + file)
-                            log_file_download(log_entry,"Urban Promise")
+                            log_file_download(log_file_entry,"Urban Promise")
                             try:
                                 sftp.remove(file)
                             except:
-                                log_script_error_cannot_remove(log_entry)
+                                log_script_error_cannot_remove(log_file_entry)
                         elif (file[-3:]=='csv'):
                             sftp.get(file, nutrition_urban_promise_path + file)
-                            log_file_download(log_entry,"Urban Promise")
+                            log_file_download(log_file_entry,"Urban Promise")
                             try:
                                 sftp.remove(file)
                             except:
-                                log_script_error_cannot_remove(log_entry)
+                                log_script_error_cannot_remove(log_file_entry)
                 else:
                     #Logging
-                    log_entry += "------------------\n"
-                    log_entry += "No New Urban Promise File on PCS Server \n"
-                    log_entry += "------------------\n"
+                    log_file_entry += "------------------\n"
+                    log_file_entry += "No New Urban Promise File on PCS Server \n"
+                    log_file_entry += "------------------\n"
     except:
         #Logging Error
-        log_entry += "------------------\n"
-        log_entry += "Problem Connecting to Server to Download Urban Promise File \n"
-        log_entry += "------------------\n"
+        log_file_entry += "------------------\n"
+        log_file_entry += "Problem Connecting to Server to Download Urban Promise File \n"
+        log_file_entry += "------------------\n"
     #######
     #endregion Download Urban Promise File
     #region Download Direct Certification Files
@@ -114,28 +114,28 @@ def titan_files_download():
                     for file in direct_cert_file:
                         if (file[-3:]=='txt'):
                             sftp.get(file, nutrition_direct_cert_path + file)
-                            log_file_download(log_entry,"DirCert")
+                            log_file_download(log_file_entry,"DirCert")
                             try:
                                 sftp.remove(file)
                             except:
-                                log_script_error_cannot_remove(log_entry)
+                                log_script_error_cannot_remove(log_file_entry)
                         elif (file[-3:]=='csv'):
                             sftp.get(file, nutrition_direct_cert_path + file)
-                            log_file_download(log_entry,"DirCert")
+                            log_file_download(log_file_entry,"DirCert")
                             try:
                                 sftp.remove(file)
                             except:
-                                log_script_error_cannot_remove(log_entry)
+                                log_script_error_cannot_remove(log_file_entry)
                 else:
                     #Logging
-                    log_entry +="------------------\n"
-                    log_entry +="No New Direct Cert Files on PCS Server \n"
-                    log_entry +="------------------\n"
+                    log_file_entry += "------------------\n"
+                    log_file_entry += "No New Direct Cert Files on PCS Server \n"
+                    log_file_entry += "------------------\n"
     except:
         #Logging
-        log_entry +="------------------\n"
-        log_entry +="Problem Connecting to Server to Download Direct Cert Files \n"
-        log_entry +="------------------\n"
+        log_file_entry += "------------------\n"
+        log_file_entry += "Problem Connecting to Server to Download Direct Cert Files \n"
+        log_file_entry += "------------------\n"
     ####### 
     #endregion Download Direct Certification Files
     #region Process Urban Promise File
@@ -148,20 +148,20 @@ def titan_files_download():
         rename(nutrition_urban_promise_path+urban_promise_files_new[0],\
             nutrition_urban_promise_path+current_urban_promise_file)
         #Write entry to log
-        log_entry += "---\n"
-        log_entry += f"{log_new_file}\n"
-        log_entry += "---\n"
+        log_file_entry += "---\n"
+        log_file_entry += f"{log_new_file}\n"
+        log_file_entry += "---\n"
     elif len(urban_promise_files) == 1:
         #Write Entry to Log
-        log_entry += "---\n"
-        log_entry += f"{log_no_file}\n"
-        log_entry += "---\n"
+        log_file_entry += "---\n"
+        log_file_entry += f"{log_no_file}\n"
+        log_file_entry += "---\n"
     else:
         #Write Entry to Log
-        log_entry += "---\n"
-        log_entry += f"{log_problem}\n"
-        log_entry += "---\n"
+        log_file_entry += "---\n"
+        log_file_entry += f"{log_problem}\n"
+        log_file_entry += "---\n"
         #Email Alert of Problem
         mail_send(log_to_email,subject_problem)
     #endregion Process Urban Promise File
-    return log_entry
+    return log_file_entry
