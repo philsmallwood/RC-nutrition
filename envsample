@@ -2,40 +2,40 @@
 scriptPath = 'LOCATION OF SCRIPTS'
 logFilePath = 'LOG DIRECTORY'
 [Server]
-nutritionServer = "SERVER IP OR NAME"
-nutritionDailyShare = './SHAREFOLDER'
+nutrition_server = "SERVER IP OR NAME"
+nutrition_daily_share = './SHAREFOLDER'
 nutritionDirCertShare = './SHAREFOLDER'
-nutritionUserName = 'USERNAME'
-nutritionServiceName = 'SERVICE NAME'
+nutrition_user_name = 'USERNAME'
+nutrition_service_name = 'SERVICE NAME'
 [SFTP]
-titanHostname = "SERVER IP OR NAME"
-titanUsername = "USERNAME"
-titanServiceName = 'SERVICE NAME'
+titan_hostname = "SERVER IP OR NAME"
+titan_username = "USERNAME"
+titan_service_name = 'SERVICE NAME'
 [Mail]
-logToEmail = 'EMAIL ADDRESS'
+log_to_email = 'EMAIL ADDRESS'
 [FilePaths]
-localNutritionFilePath = 'DIRECTORY'
-localDSCFilePath = 'DIRECTORY'
+nutrition_file_path = 'DIRECTORY'
+dsc_file_path = 'DIRECTORY'
 localDOEFilePath = 'DIRECTORY'
-localRCFilePath = 'DIRECTORY'
-localArchivePath ='DIRECTORY'
-localNutritionUrbanPromisePath = ${localNutritionFilePath}DIRECTORY/
-localNutritionDirCertPath = ${localNutritionFilePath}DIRECTORY
-currentUrbanPromiseFile = 'FILE NAME'
+rc_file_path = 'DIRECTORY'
+archive_path ='DIRECTORY'
+nutrition_urban_promise_path = ${nutrition_file_path}DIRECTORY/
+nutrition_direct_cert_path = ${nutrition_file_path}DIRECTORY
+current_urban_promise_file = 'FILE NAME'
 [StudentFile]
-localStudentFilePath = ${localDOEFilePath}FILENAME
-localCharterStudentFilePath = ${localDSCFilePath}FILENAME
-localUrbanPromiseFilePath = ${localNutritionUrbanPromisePath}${currentUrbanPromiseFile}
-localAllergyFilePath = ${localDSCFilePath}FILENAME
-localStudentLanguageFilePath = ${localDOEFilePath}FILENAME
-localUpStudentFilePath = ${localRCFilePath}FILENAME
+student_file_path = ${localDOEFilePath}FILENAME
+charter_student_file_path = ${dsc_file_path}FILENAME
+urban_promise_file_path = ${nutrition_urban_promise_path}${current_urban_promise_file}
+allergy_file_path = ${dsc_file_path}FILENAME
+student_language_file_path = ${localDOEFilePath}FILENAME
+titan_student_final_file = ${rc_file_path}FILENAME
 [Staff]
-localStaffFile = ${localDSCFilePath}FILENAME
-localStaffEmailFile = ${localRCFilePath}FILENAME
-localContractorFile = ${localRCFilePath}FILENAME
-localUpStaffFilePath = ${localRCFilePath}FILENAME
+staff_file = ${dsc_file_path}FILENAME
+staff_email_file = ${rc_file_path}FILENAME
+contractor_file = ${rc_file_path}FILENAME
+staff_final_file = ${rc_file_path}FILENAME
 [DirectCert]
-localUpDirCertFilePath = ${localRCFilePath}FILENAME
+direct_cert_file_path = ${rc_file_path}FILENAME
 
 
 

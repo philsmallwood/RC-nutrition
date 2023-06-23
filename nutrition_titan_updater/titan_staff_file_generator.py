@@ -21,10 +21,10 @@ def titan_staff_file_generator():
     date_str = current_date.strftime('%m-%d-%Y')
     staff_date = current_date.strftime('%m/%d/%Y')
     #Files
-    staff_file = getenv('localStaffFile')
-    staff_email_file = getenv('localStaffEmailFile')
-    contractor_file = getenv('localContractorFile')
-    staff_final_file = getenv('localUpStaffFilePath')
+    staff_file = getenv('staff_file')
+    staff_email_file = getenv('staff_email_file')
+    contractor_file = getenv('contractor_file')
+    staff_final_file = getenv('staff_final_file')
     ###Set Dictionaries to Rename Columns
     col_names_staff = { 0 : 'EmployeeID', 
                 1 : 'LastName',

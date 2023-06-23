@@ -21,13 +21,13 @@ def titan_files_upload():
     #Log
     log_entry = str()
     #Titan SFTP Vars
-    titan_hostname = getenv('titanHostname')
-    titan_username = getenv('titanUsername')
-    titan_service_name = getenv('titanServiceName')
+    titan_hostname = getenv('titan_hostname')
+    titan_username = getenv('titan_username')
+    titan_service_name = getenv('titan_service_name')
     #Files
-    upload_files = [getenv('localUpStudentFilePath'),
-        getenv('localUpDirCertFilePath'),
-        getenv('localUpStaffFilePath')]
+    upload_files = [getenv('titan_student_final_file'),
+        getenv('direct_cert_file_path'),
+        getenv('staff_final_file')]
     #######
 
     ###Upload Files to Classlink

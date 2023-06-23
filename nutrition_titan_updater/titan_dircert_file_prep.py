@@ -19,9 +19,9 @@ def titan_dircert_file_prep():
     current_date = date.today()
     date_str = current_date.strftime('%m-%d-%Y')
     #File Vars
-    nutrition_direct_cert_path = getenv('localNutritionDirCertPath')
-    archive_path = getenv('localArchivePath')
-    direct_cert_file_path = getenv('localUpDirCertFilePath')
+    nutrition_direct_cert_path = getenv('nutrition_direct_cert_path')
+    archive_path = getenv('archive_path')
+    direct_cert_file_path = getenv('direct_cert_file_path')
     archive_dircect_cert_file = f"{archive_path}dircertupload-{date_str}.csv"
     #Empty Dataframe to Start
     df_dircerts = pd.DataFrame()

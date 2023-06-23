@@ -31,12 +31,12 @@ def titan_student_file_generator():
     student_date = current_date.strftime('%m/%d/%Y')
     earliest_student_start_date = '08/29/2023'
     #File Locations
-    student_file_path = getenv('localStudentFilePath')
-    charter_student_file_path = getenv('localCharterStudentFilePath')
-    urban_promise_file_path = getenv('localUrbanPromiseFilePath')
-    allergy_file_path = getenv('localAllergyFilePath')
-    student_language_file_path = getenv('localStudentLanguageFilePath')
-    titan_student_final_file = getenv('localUpStudentFilePath')
+    student_file_path = getenv('student_file_path')
+    charter_student_file_path = getenv('charter_student_file_path')
+    urban_promise_file_path = getenv('urban_promise_file_path')
+    allergy_file_path = getenv('allergy_file_path')
+    student_language_file_path = getenv('student_language_file_path')
+    titan_student_final_file = getenv('titan_student_final_file')
     #Charter Necessary Columns
     charter_needed_columns = [0, 2, 3, 4, 5, 7, 8, 9, 
         12, 14, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 

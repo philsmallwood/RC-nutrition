@@ -25,19 +25,19 @@ def titan_files_download():
     current_date = date.today()
     date_str = current_date.strftime('%m-%d-%Y')
     #Server Info
-    nutrition_server = getenv('nutritionServer')
-    nutrition_daily_share = getenv('nutritionDailyShare')
+    nutrition_server = getenv('nutrition_server')
+    nutrition_daily_share = getenv('nutrition_daily_share')
     nutrition_direct_cert_share = getenv('nutritionDirCertShare')
-    nutrition_user_name = getenv('nutritionUserName')
-    nutrition_service_name = getenv('nutritionServiceName')
+    nutrition_user_name = getenv('nutrition_user_name')
+    nutrition_service_name = getenv('nutrition_service_name')
     #File Vars
-    nutrition_urban_promise_path = getenv('localNutritionUrbanPromisePath')
-    nutrition_direct_cert_path = getenv('localNutritionDirCertPath')
-    current_urban_promise_file = getenv('currentUrbanPromiseFile')
-    archive_file = getenv('localArchivePath') + 'urbanpromise-' + date_str + '.xls'
+    nutrition_urban_promise_path = getenv('nutrition_urban_promise_path')
+    nutrition_direct_cert_path = getenv('nutrition_direct_cert_path')
+    current_urban_promise_file = getenv('current_urban_promise_file')
+    archive_file = getenv('archive_path') + 'urbanpromise-' + date_str + '.xls'
     #Mail_send Vars
     log_entry = str()
-    log_to_email = getenv('logToEmail')
+    log_to_email = getenv('log_to_email')
     log_new_file = 'New Urban Promise File Downloaded'
     log_no_file = 'No New Urban Promise File'
     log_problem = 'Urban Promise File - PROBLEM!!'
