@@ -74,9 +74,9 @@ log_file += "---\n"
 for sub_script in script_list:
     try:
         log_file += sub_script()
-        log_file += log_script_var(sub_script)
+        log_file += log_script_var(sub_script.__name__)
     except:
-        log_file += log_script_error_var(sub_script)
+        log_file += log_script_error_var(sub_script.__name__)
 ###########
 
 ###Write Log to Google###
