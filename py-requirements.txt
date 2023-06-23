@@ -1,6 +1,6 @@
 pandas
 python-dotenv
 pysftp
-keyrings.alt
 rcmailsend
 rc_google_py
+dfcleanup
