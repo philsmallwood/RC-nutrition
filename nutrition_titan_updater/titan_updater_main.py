@@ -12,9 +12,15 @@
 
 ###Import Modules###
 import time
-import datetime
-import os
+from datetime import date
+from os import getenv
 from dotenv import load_dotenv
+from titan_files_upload import titan_files_upload
+from titan_student_file_generator import titan_student_file_generator
+from titan_staff_file_generator import titan_staff_file_generator
+from titan_dircert_file_prep import titan_dircert_file_prep
+from titan_files_download import titan_files_download
+from rc_google_py import write_log_to_google,login_google_service_account
 from rcmailsend import mail_send #Self Created Module
 #######
 
@@ -22,83 +28,68 @@ from rcmailsend import mail_send #Self Created Module
 #Load .ENV File
 load_dotenv()
 #Date
-CurrentDate = datetime.date.today()
-Date = CurrentDate.strftime('%m-%d-%Y')
-startTime = time.ctime()
+current_date = date.today()
+date_str = current_date.strftime('%m-%d-%Y')
+start_time = time.ctime()
 #Scripts
-scriptPath = os.getenv('scriptPath')
-sourceFilesScript = 'titan_files_download.py'
-studentFileScript = 'titan_student_file_generator.py'
-directCertScript = 'titan_dircert_file_prep.py'
-staffFileScript = 'titan_staff_file_generator.py'
-titanFileUploadScript = 'titan_files_upload.py'
-#Email Vars
-logToEmail = os.getenv('logToEmail')
-logSubject = 'Titan Updater Log'
-logFile = os.getenv('logFilePath') + "Titan-" + Date + ".log"
-##Function Definitions
-#Function to call a python script and append info to a log file
-def pyscript_call(scriptPath,scriptName,logFile):
-    #Call a python script
-    os.system("python3 %s" % scriptPath + scriptName)
-    #Write entry to log
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write("The " + scriptName + " script ran successfully \n")
-    f.write("---\n")
-    f.close()
-def log_script_error(scriptName,logFile):
-    #Write the Error to the Log
-        ###Log Error
-    f = open(logFile, "a")
-    f.write("---\n")
-    f.write("The " + scriptName + " failed! \n")
-    f.write("---\n")
-    f.close()
+script_list = [titan_files_download, titan_student_file_generator,
+    titan_dircert_file_prep, titan_staff_file_generator, titan_files_upload]
+#Google Info
+google_auth_key = getenv('google_auth_key')
+network_team_drive_id = getenv('network_team_drive_id')
+titan_log_folder_id = getenv('titan_log_folder_id')
+#Log Vars
+log_file = str()
+log_file_name = 'TitanDailyUpdaterLog-'
+#Email Alert Vars
+alert_to_email = getenv('log_to_email')
+alert_subject = "Titan Updater - ERROR ALERT"
 ###########
 
-###Log Begin
-f = open(logFile, "a")
-f.write("------------------\n")
-f.write("The Titan Updater Script was started on " + startTime + "\n")
-f.write("---\n")
-f.close()
+###Function Definitions###
+#Log Successful Transfer
+def log_script_var(script_name):
+    log_entry = str()
+    log_entry += "---\n"
+    log_entry += f"Script {script_name} ran successfully \n"
+    log_entry += "---\n"
+    return log_entry
+#Log Transfer Error
+def log_script_error_var(script_name):
+    log_entry = str()
+    log_entry += "---\n"
+    log_entry += f"!! Error !! Script {script_name} failed! \n"
+    log_entry += "---\n"
+    return log_entry
+###########
 
-###Source Files Downloader###
-try:
-    pyscript_call(scriptPath,sourceFilesScript,logFile)
+###Log Begin###
+log_file += "------------------\n"
+log_file += f"The Classlink Updater Script was started on {start_time} \n"
+log_file += "---\n"
+###########
+
+
+###Call the Scripts###
+for sub_script in script_list:
+    try:
+        log_file += sub_script()
+        log_file += log_script_var(sub_script.__name__)
+    except:
+        log_file += log_script_error_var(sub_script.__name__)
+###########
+
+###Write Log to Google###
+try: 
+    write_log_to_google(google_auth_key, network_team_drive_id,
+        titan_log_folder_id, log_file,
+        log_file_name, date_str)
 except:
-    log_script_error(sourceFilesScript,logFile)
-###########
+    #Email if Error Logging
+    mail_send(alert_to_email,alert_subject)
+########
 
-###Student Updater File Generator###
-try:
-    pyscript_call(scriptPath,studentFileScript,logFile)
-except:
-    log_script_error(studentFileScript,logFile)
-###########
-
-###Direct Certification File Generator###
-try:
-    pyscript_call(scriptPath,directCertScript,logFile)
-except:
-    log_script_error(directCertScript,logFile)
-###########
-
-###Staff Updater File Generator###
-try:
-    pyscript_call(scriptPath,staffFileScript,logFile)
-except:
-    log_script_error(staffFileScript,logFile)
-###########
-
-###Titan File Uploader###
-try:
-    pyscript_call(scriptPath,titanFileUploadScript,logFile)
-except:
-    log_script_error(titanFileUploadScript,logFile)
-###########
-
-###Email Results###
-mail_send(logToEmail,logSubject,logFile)
+###Alert if Error###
+if "error" in log_file.lower():
+    mail_send(alert_to_email,alert_subject)
 ########

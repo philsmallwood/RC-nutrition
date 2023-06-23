@@ -1,42 +1,39 @@
-[Main]
-scriptPath = 'LOCATION OF SCRIPTS'
-logFilePath = 'LOG DIRECTORY'
 [Server]
-nutritionServer = "SERVER IP OR NAME"
-nutritionDailyShare = './SHAREFOLDER'
-nutritionDirCertShare = './SHAREFOLDER'
-nutritionUserName = 'USERNAME'
-nutritionServiceName = 'SERVICE NAME'
+nutrition_server = SERVER_NAME_OR_IP
+nutrition_daily_share = SHARE_NAME
+nutrition_direct_cert_share = SHARE_NAME
+nutrition_user_name = USERNAME
+nutrition_pass = PASSWORD
 [SFTP]
-titanHostname = "SERVER IP OR NAME"
-titanUsername = "USERNAME"
-titanServiceName = 'SERVICE NAME'
+titan_hostname = SERVER_NAME_OR_IP
+titan_username = nutrition_user_name = USERNAME
+titan_pass = PASSWORD
 [Mail]
-logToEmail = 'EMAIL ADDRESS'
+log_to_email = EMAIL
 [FilePaths]
-localNutritionFilePath = 'DIRECTORY'
-localDSCFilePath = 'DIRECTORY'
-localDOEFilePath = 'DIRECTORY'
-localRCFilePath = 'DIRECTORY'
-localArchivePath ='DIRECTORY'
-localNutritionUrbanPromisePath = ${localNutritionFilePath}DIRECTORY/
-localNutritionDirCertPath = ${localNutritionFilePath}DIRECTORY
-currentUrbanPromiseFile = 'FILE NAME'
+nutrition_file_path = FOLDER_PATH
+dsc_file_path = FOLDER_PATH
+doe_file_path = FOLDER_PATH
+rc_file_path = FOLDER_PATH
+archive_path = FOLDER_PATH
+nutrition_urban_promise_path = FOLDER_PATH
+nutrition_direct_cert_path = FOLDER_PATH
+current_urban_promise_file = FOLDER_PATH
 [StudentFile]
-localStudentFilePath = ${localDOEFilePath}FILENAME
-localCharterStudentFilePath = ${localDSCFilePath}FILENAME
-localUrbanPromiseFilePath = ${localNutritionUrbanPromisePath}${currentUrbanPromiseFile}
-localAllergyFilePath = ${localDSCFilePath}FILENAME
-localStudentLanguageFilePath = ${localDOEFilePath}FILENAME
-localUpStudentFilePath = ${localRCFilePath}FILENAME
+student_file_path = FILE_NAME
+charter_student_file_path = FILE_NAME
+urban_promise_file_path = FILE_NAME
+allergy_file_path = FILE_NAME
+student_language_file_path = FILE_NAME
+titan_student_final_file = FILE_NAME
 [Staff]
-localStaffFile = ${localDSCFilePath}FILENAME
-localStaffEmailFile = ${localRCFilePath}FILENAME
-localContractorFile = ${localRCFilePath}FILENAME
-localUpStaffFilePath = ${localRCFilePath}FILENAME
+staff_file = FILE_NAME
+staff_email_file = FILE_NAME
+contractor_file = FILE_NAME
+staff_final_file = FILE_NAME
 [DirectCert]
-localUpDirCertFilePath = ${localRCFilePath}FILENAME
-
-
-
-
+direct_cert_file_path = FILE_NAME
+[Google]
+google_auth_key = GOOGLE_API_KEY_FILE
+network_team_drive_id = GOOGLE_TEAM_DRIVE_ID
+titan_log_folder_id = GOOGLE_FOLDER_ID

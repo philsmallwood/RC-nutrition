@@ -1,0 +1,7 @@
+pandas
+openpyxl
+python-dotenv
+pysftp
+rcmailsend
+rc_google_py
+dfcleanup
