@@ -6,7 +6,6 @@
 def titan_student_file_generator():
     ###Import Modules###
     import pandas as pd
-    import time
     from os import getenv,environ,execv
     import sys
     from datetime import date
@@ -216,3 +215,5 @@ def titan_student_file_generator():
     ###Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
+
+    return "Titan Student Script Completed"
