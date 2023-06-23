@@ -76,7 +76,7 @@ for sub_script in script_list:
         log_file += sub_script()
         log_file += log_script_var(sub_script)
     except:
-        log_script_error_var(sub_script)
+        log_file += log_script_error_var(sub_script)
 ###########
 
 ###Write Log to Google###
