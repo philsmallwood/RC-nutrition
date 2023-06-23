@@ -6,22 +6,14 @@
 def titan_student_file_generator():
     ###Import Modules###
     import pandas as pd
-    from os import getenv,environ,execv
-    import sys
+    from hashlib import md5
+    from os import getenv
     from datetime import date
     from dotenv import load_dotenv
     from dfcleanup import df_stripper #Self Created Module
     #######
-
-    ###Turns off the hashseed randomization###
-    ###Used to ensure that people with the same address get the same household ID
-    ###everytime the script runs
-    hashseed = getenv('PYTHONHASHSEED')
-    if not hashseed:
-        environ['PYTHONHASHSEED'] = '0'
-        execv(sys.executable, [sys.executable] + sys.argv)
+    
     #######
-
     #####Variables#####
     #Load .ENV File
     load_dotenv()
@@ -87,7 +79,6 @@ def titan_student_file_generator():
         1 : 'Student Language'
     }
     ############
-
     ###Read Files into Dataframes###
     #Read RC Student File to Dataframe
     df_rc_students = pd.read_csv(student_file_path, dtype=str)
@@ -116,7 +107,6 @@ def titan_student_file_generator():
     #Rename the StudentID Field in Languages DataFrame
     df_languages.rename(columns=col_names_language, inplace=True)
     ############
-
     ###Format Charter schools dataframe###
     ###Combine Street Address Line 1 and Apartment to match other sources
     df_charter_students['Street Addr Line & Apt - Physical'] = \
@@ -142,7 +132,6 @@ def titan_student_file_generator():
     df_charter_students.loc[df_charter_students['Hispanic/Latino Ethnicity'] == 'Non-Hispanic', \
         ['Hispanic/Latino Ethnicity']] = 'N' #Non-Hispanic
     ############
-
     ###Format Urban Promise dataframe###
     df_urban_promise_students = df_urban_promise_students.loc[df_urban_promise_students[0] == '5544']
     ###Fix date format by making object a 'datetime' format and setting output
@@ -157,14 +146,12 @@ def titan_student_file_generator():
     ###Rename columns for final output
     df_urban_promise_students.rename(columns=col_names_urban_promise, inplace=True)
     ############
-
     ###Format Main Student dataframe###
     ###Drop Z calendar (320888) and First State School (320530) students
     df_rc_students = df_rc_students[ (df_rc_students['Current Building'] != '888') & \
         (df_rc_students['Current Building'] != '530') ]
     df_rc_students['Student Building'] = '320' + df_rc_students['Current Building']
     ############
-
     ###Combine all of the Dataframes###
     ##Add allergies for RC Students to Main
     df_rc_students = df_rc_students.merge(df_allergies[['Student Id', 'Allergies']], \
@@ -177,7 +164,6 @@ def titan_student_file_generator():
     ##Add Urban Promise Students to Main
     df_all_students = df_rc_and_charter_students.merge(df_urban_promise_students, how = 'outer')
     ############
-
     ###Final Prep and Upload### 
     ###Reorder to Final Data Frame
     df_final = df_all_students[['Student Id', 'Student First Name', 'Student Middle Name', \
@@ -188,22 +174,18 @@ def titan_student_file_generator():
         'Street Addr Line & Apt - Mailing', 'City - Mailing', 'State - Mailing', 'Zip - Mailing', \
         'First Name - Guardian', 'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', \
         'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', 'Student Language']].copy()
-
-    ###Create Household ID based on Street Address
-    df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].map(hash)
+    ###Create Household ID Based on Street Address Using Hashlib.md5
+    df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].apply(lambda x: md5(x.encode()).hexdigest())
     ###Make HouseHold ID shorter
     df_final['HHID'] = df_final['HHID'].astype(str).str[1:16]
-
     ###Copy Physical Address to Mailing Address if Blank
     df_final['Street Addr Line & Apt - Mailing'].fillna(\
         df_final['Street Addr Line & Apt - Physical'], inplace=True)
     df_final['City - Mailing'].fillna(df_final['City - Physical'], inplace=True)
     df_final['State - Mailing'].fillna(df_final['State - Physical'], inplace=True)
     df_final['Zip - Mailing'].fillna(df_final['Zip - Physical'], inplace=True)
-
     ###Fill Guardian Relationship as Guardian if Blank
     df_final['Relation Name - Guardian'].fillna('Guardian', inplace=True)
-
     ###Add Entry Date
     ##Use the earliest Entry Date if it is before that date
     ##Otherwise, use the current date
@@ -211,9 +193,7 @@ def titan_student_file_generator():
         df_final['Enrollment Date'] = earliest_student_start_date
     else:
         df_final['Enrollment Date'] = student_date
-
     ###Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
-
     return "Titan Student Script Completed"
