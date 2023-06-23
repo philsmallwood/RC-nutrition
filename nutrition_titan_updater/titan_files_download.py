@@ -8,9 +8,7 @@
 
 def titan_files_download():
     ###Import Modules###
-    import keyring
     import pysftp
-    import time
     from os import getenv,listdir,rename
     from datetime import date
     from dotenv import load_dotenv
@@ -29,7 +27,7 @@ def titan_files_download():
     nutrition_daily_share = getenv('nutrition_daily_share')
     nutrition_direct_cert_share = getenv('nutritionDirCertShare')
     nutrition_user_name = getenv('nutrition_user_name')
-    nutrition_service_name = getenv('nutrition_service_name')
+    nutrition_pass = getenv('nutrition_pass')
     #File Vars
     nutrition_urban_promise_path = getenv('nutrition_urban_promise_path')
     nutrition_direct_cert_path = getenv('nutrition_direct_cert_path')
@@ -64,8 +62,9 @@ def titan_files_download():
     #Download Files with .xls, .xlsx, or .csv Extentions
     #in Dailyenrollment Folder on Server
     try:
-        with pysftp.Connection(host=nutrition_server, username=nutrition_user_name, \
-            password=keyring.get_password(nutrition_service_name, nutrition_user_name)) as sftp:
+        with pysftp.Connection(host=nutrition_server, \
+            username=nutrition_user_name, \
+            password=nutrition_pass) as sftp:
             with sftp.cd(nutrition_daily_share):
                 dailyFiles = sftp.listdir()
                 if dailyFiles:
