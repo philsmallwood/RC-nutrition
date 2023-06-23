@@ -46,15 +46,18 @@ def titan_staff_file_generator():
 
     #####Read Files into Dataframes#####    
     ###Read Staff File into Dataframe
-    df_staff = pd.read_csv(staff_file, skiprows=1, header=None, dtype=str)
+    df_staff = pd.read_csv(staff_file, skiprows=1, \
+        header=None, dtype=str)
     df_staff = df_stripper(df_staff)
     df_staff.rename(columns=col_names_staff, inplace=True)
     ###Read Email File into Dataframe
-    df_email = pd.read_csv(staff_email_file, skiprows=1, header=None, dtype=str)
+    df_email = pd.read_csv(staff_email_file, skiprows=1, \
+        header=None, dtype=str)
     df_email = df_stripper(df_email)
     df_email.rename(columns=col_names_email, inplace=True)
     ###Read Contractor File into Dataframe
-    df_contractors = pd.read_csv(contractor_file, skiprows=1, header=None, dtype=str)
+    df_contractors = pd.read_csv(contractor_file, skiprows=1, \
+        header=None, dtype=str)
     df_contractors = df_stripper(df_contractors)
     df_contractors.rename(columns=col_names_contractors, inplace=True)
     #######
@@ -73,8 +76,9 @@ def titan_staff_file_generator():
     #######
 
     ###Final Datafram###
-    df_final = df_staff_all[['EmployeeID', 'FirstName', 'MiddleName', \
-        'LastName', 'EmailAddress', 'EmployeeID', 'Dob', 'HR_Gender', 'HR_Location']]
+    df_final = df_staff_all[['EmployeeID', 'FirstName', \
+        'MiddleName', 'LastName', 'EmailAddress', 'EmployeeID', \
+        'Dob', 'HR_Gender', 'HR_Location']].copy()
     ###Add staff type to dataframe
     #Can be set to 'General' for all non-Nutrition workers
     df_final['StaffType'] = 'General'
@@ -85,3 +89,5 @@ def titan_staff_file_generator():
     ###Export to data to csv file
     df_final.to_csv(staff_final_file, index=False)
     #######
+
+    return "Titan Staff File Script Completed"
