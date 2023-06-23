@@ -4,7 +4,6 @@
 ### the student file for Urban Promise Charter
 ### and the Direct Certification Files from the 
 ### Nutrition Server
-### For keyring, need to set the username/password for sftp sites for downloads and uploads
 
 def titan_files_download():
     ###Import Modules###
