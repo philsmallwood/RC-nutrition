@@ -1,15 +1,12 @@
 ### RC Titan Files Upload
 ### Script to upload files the newest to 
 ### Titan Nutrition Management System
-### For keyring, need to set the username/password for sftp sites for downloads and uploads
 
 def titan_files_upload():
     ###Import Modules
     import pysftp
     import time
-    import keyring
     from dotenv import load_dotenv
-    from datetime import date
     from os import getenv
     #######
 
@@ -23,7 +20,7 @@ def titan_files_upload():
     #Titan SFTP Vars
     titan_hostname = getenv('titan_hostname')
     titan_username = getenv('titan_username')
-    titan_service_name = getenv('titan_service_name')
+    titan_pass = getenv('titan_pass')
     #Files
     upload_files = [getenv('titan_student_final_file'),
         getenv('direct_cert_file_path'),
@@ -31,8 +28,9 @@ def titan_files_upload():
     #######
 
     ###Upload Files to Classlink
-    with pysftp.Connection(host=titan_hostname, username=titan_username, \
-        password=keyring.get_password(titan_service_name, titan_username)) as sftp:
+    with pysftp.Connection(host=titan_hostname, \
+        username=titan_username, \
+        password=titan_pass) as sftp:
         for up_file in upload_files:
             sftp.put(up_file,up_file.split('/')[-1])
     #######
