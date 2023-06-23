@@ -23,7 +23,7 @@ def titan_files_download():
     #Server Info
     nutrition_server = getenv('nutrition_server')
     nutrition_daily_share = getenv('nutrition_daily_share')
-    nutrition_direct_cert_share = getenv('nutritionDirCertShare')
+    nutrition_direct_cert_share = getenv('nutrition_direct_cert_share')
     nutrition_user_name = getenv('nutrition_user_name')
     nutrition_pass = getenv('nutrition_pass')
     #File Vars
