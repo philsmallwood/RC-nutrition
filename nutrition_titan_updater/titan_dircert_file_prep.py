@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 ###RC Titan DirectCert Script
 ###Script to process Direct Cert files and upload to Titan
-###For keyring, need to set the username/password for sftp sites for downloads and uploads
 
 def titan_dircert_file_prep():
 
