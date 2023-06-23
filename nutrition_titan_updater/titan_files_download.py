@@ -14,7 +14,6 @@ def titan_files_download():
     from dotenv import load_dotenv
     from rcmailsend import mail_send #Self Created Module
     #######
-
     #region Variable and Function Defs
     #####Variables#####
     #Load .ENV File
@@ -55,8 +54,6 @@ def titan_files_download():
         log_entry += "------------------\n"
     #######
     #endregion Variable and Function Defs
-
-
     #region Download Urban Promise File
     ###Get Urban Promise File###
     #Download Files with .xls, .xlsx, or .csv Extentions
@@ -66,9 +63,9 @@ def titan_files_download():
             username=nutrition_user_name, \
             password=nutrition_pass) as sftp:
             with sftp.cd(nutrition_daily_share):
-                dailyFiles = sftp.listdir()
-                if dailyFiles:
-                    for file in dailyFiles:
+                daily_nutrition_files = sftp.listdir()
+                if daily_nutrition_files:
+                    for file in daily_nutrition_files:
                         if (file[-3:]=='xls'):
                             sftp.get(file, nutrition_urban_promise_path + file)
                             log_file_download(log_entry,"Urban Promise")
@@ -102,19 +99,19 @@ def titan_files_download():
         log_entry += "------------------\n"
     #######
     #endregion Download Urban Promise File
-
     #region Download Direct Certification Files
     ###Get Direct Cert Files###
     #Download Files with .txt or .csv Extentions in 
     #Dircert Folder on Server
     try:
-        with pysftp.Connection(host=nutrition_server, username=nutrition_user_name, \
-            password=keyring.get_password(nutrition_service_name, nutrition_user_name)) \
+        with pysftp.Connection(host=nutrition_server, \
+            username=nutrition_user_name, \
+            password=nutrition_pass) \
             as sftp:
             with sftp.cd(nutrition_direct_cert_share):
-                dircertFiles = sftp.listdir()
-                if dircertFiles:
-                    for file in dircertFiles:
+                direct_cert_file = sftp.listdir()
+                if direct_cert_file:
+                    for file in direct_cert_file:
                         if (file[-3:]=='txt'):
                             sftp.get(file, nutrition_direct_cert_path + file)
                             log_file_download(log_entry,"DirCert")
@@ -141,21 +138,20 @@ def titan_files_download():
         log_entry +="------------------\n"
     ####### 
     #endregion Download Direct Certification Files
-
     #region Process Urban Promise File
     ###Make New File Current and Backup Old File###
-    urbanPromiseFiles = listdir(nutrition_urban_promise_path)
-    if len(urbanPromiseFiles) == 2:
+    urban_promise_files = listdir(nutrition_urban_promise_path)
+    if len(urban_promise_files) == 2:
         #Move current file to archive
         rename(nutrition_urban_promise_path+current_urban_promise_file,archive_file)
-        urbanPromiseFilesNew = listdir(nutrition_urban_promise_path)
-        rename(nutrition_urban_promise_path+urbanPromiseFilesNew[0],\
+        urban_promise_files_new = listdir(nutrition_urban_promise_path)
+        rename(nutrition_urban_promise_path+urban_promise_files_new[0],\
             nutrition_urban_promise_path+current_urban_promise_file)
         #Write entry to log
         log_entry += "---\n"
         log_entry += f"{log_new_file}\n"
         log_entry += "---\n"
-    elif len(urbanPromiseFiles) == 1:
+    elif len(urban_promise_files) == 1:
         #Write Entry to Log
         log_entry += "---\n"
         log_entry += f"{log_no_file}\n"
@@ -168,5 +164,4 @@ def titan_files_download():
         #Email Alert of Problem
         mail_send(log_to_email,subject_problem)
     #endregion Process Urban Promise File
-
     return log_entry
