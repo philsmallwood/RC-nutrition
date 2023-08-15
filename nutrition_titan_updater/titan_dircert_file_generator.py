@@ -76,3 +76,7 @@ def titan_dircert_file_generator():
     df_final.to_csv(direct_cert_file_path, index=False)
     #Return Message
     return log_entry
+
+if __name__ == '__main__':
+    log_entry = titan_dircert_file_generator()
+    print('log_entry')
