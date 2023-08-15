@@ -73,7 +73,7 @@ def titan_student_file_generator():
     df_rc_students = df_stripper(df_rc_students)
     #Read Charter School File to Dataframe
     df_charter_students = pd.read_csv(charter_student_file_path, \
-        header=None, skiprows=1, dtype=str, on_bad_lines='skip')
+        encoding='cp1252', header=None, skiprows=1, dtype=str, on_bad_lines='skip')
     df_charter_students = df_stripper(df_charter_students)
     #Read Urban Promise File to Dataframe
     urban_promise_download = titan_urban_promise_data_download()
