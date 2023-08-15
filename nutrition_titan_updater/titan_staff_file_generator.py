@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 ###RC Titan Staff File Script
 ###Script to generate a student file with the necesary info for nutrition
-###For keyring, need to set the username/password for sftp sites for downloads and uploads
 
 def titan_staff_file_generator():
 
@@ -18,8 +17,9 @@ def titan_staff_file_generator():
     load_dotenv()
     #Date
     current_date = date.today()
-    date_str = current_date.strftime('%m-%d-%Y')
     staff_date = current_date.strftime('%m/%d/%Y')
+    #Log Entry
+    log_entry = ""
     #Files
     staff_file = getenv('staff_file')
     staff_email_file = getenv('staff_email_file')
@@ -89,5 +89,13 @@ def titan_staff_file_generator():
     ###Export to data to csv file
     df_final.to_csv(staff_final_file, index=False)
     #######
+    ###Log Entry###
+    log_entry += "---------------------------------\n"
+    log_entry += "Titan Staff File Script Completed\n"
+    log_entry += "---------------------------------\n"
+    #######
+    return log_entry
 
-    return "Titan Staff File Script Completed"
+if __name__ == '__main__':
+    log_entry = titan_staff_file_generator()
+    print(log_entry)
