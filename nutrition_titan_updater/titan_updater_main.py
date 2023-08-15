@@ -4,9 +4,8 @@
 ### create create, fix, and upload files for 
 ### Titan Nutrition Managment System
 ### Scripts: 
-# titan_files_download.py
+# titan_dircert_file_generator.py
 # titan_student_file_generator.py
-# titan_dircert_file_prep.py
 # titan_staff_file_generator.py
 # titan_files_upload.py
 
@@ -18,9 +17,8 @@ from dotenv import load_dotenv
 from titan_files_upload import titan_files_upload
 from titan_student_file_generator import titan_student_file_generator
 from titan_staff_file_generator import titan_staff_file_generator
-from titan_dircert_file_prep import titan_dircert_file_prep
-from titan_files_download import titan_files_download
-from rc_google_py import write_log_to_google,login_google_service_account
+from titan_dircert_file_generator import titan_dircert_file_generator
+from rc_google_py import write_log_to_google
 from rcmailsend import mail_send #Self Created Module
 #######
 
@@ -32,8 +30,8 @@ current_date = date.today()
 date_str = current_date.strftime('%m-%d-%Y')
 start_time = time.ctime()
 #Scripts
-script_list = [titan_files_download, titan_student_file_generator,
-    titan_dircert_file_prep, titan_staff_file_generator, titan_files_upload]
+script_list = [titan_dircert_file_generator, titan_student_file_generator,
+    titan_staff_file_generator, titan_files_upload]
 #Google Info
 google_auth_key = getenv('google_auth_key')
 network_team_drive_id = getenv('network_team_drive_id')
@@ -65,7 +63,7 @@ def log_script_error_var(script_name):
 
 ###Log Begin###
 log_file += "------------------\n"
-log_file += f"The Classlink Updater Script was started on {start_time} \n"
+log_file += f"The Titan Updater Script was started on {start_time} \n"
 log_file += "---\n"
 ###########
 
