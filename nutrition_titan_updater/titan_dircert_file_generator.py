@@ -81,4 +81,4 @@ def titan_dircert_file_generator():
 
 if __name__ == '__main__':
     log_entry = titan_dircert_file_generator()
-    print('log_entry')
+    print(log_entry)
