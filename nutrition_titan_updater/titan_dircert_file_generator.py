@@ -73,7 +73,8 @@ def titan_dircert_file_generator():
     #Format Final DataFrame
     df_final['StudentID'] = df_dircerts['StudentID1'].astype(str).str.zfill(6)
     df_final['Type'] = df_dircerts['Type']
-    df_final['Entry_Date'] = df_dircerts['Entry_Date']
+    df_final['Entry_Date'] = pd.to_datetime(df_dircerts['Entry_Date'])
+    df_final['Entry_Date'] = df_dircerts['Entry_Date'].dt.strftime('%m/%d/%Y')
     #Export Final DataFrame to File
     df_final.to_csv(direct_cert_file_path, index=False)
     #Return Message
