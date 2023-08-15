@@ -169,7 +169,9 @@ def titan_student_file_generator():
     ###Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
-    log_entry += "Titan Student Script Completed"
+    log_entry += "------------------------------\n"
+    log_entry += "Titan Student Script Completed\n"
+    log_entry += "------------------------------\n"
     return log_entry
 
 if __name__ == "__main__":
