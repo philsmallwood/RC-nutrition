@@ -131,8 +131,7 @@ def titan_student_file_generator():
     df_rc_and_charter_students = df_rc_students.merge(df_charter_students, \
         how = 'outer')
     ##Add Urban Promise Students to Main
-    df_all_students = df_rc_and_charter_students.merge(df_urban_promise_students, \
-        how = 'outer')
+    df_all_students = pd.concat([df_rc_and_charter_students, df_urban_promise_students])
     ############
     ###Final Prep and Upload### 
     ###Reorder to Final Data Frame
