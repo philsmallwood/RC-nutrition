@@ -14,15 +14,15 @@ def titan_dircert_file_generator():
     direct_cert_file_path = getenv('direct_cert_file_path')
     #Google Vars
     google_auth_key = getenv('google_auth_key')
-    nutrition_shared_drive_id = getenv('')
-    direct_cert_shared_folder_id = getenv('')
+    nutrition_shared_drive_id = getenv('nutrition_shared_drive_id')
+    direct_cert_shared_folder_id = getenv('direct_cert_shared_folder_id')
+    google_drive_query = f"{direct_cert_shared_folder_id} in parents and trashed=false"
     #Empty Vars
     log_entry = str()
     dircert_file_ids = []
     df_dircerts = pd.DataFrame()
     df_final = pd.DataFrame()
     #######
-
     ###Authenticate to Google###
     gauth = login_google_service_account(google_auth_key)
     drive = GoogleDrive(gauth)
@@ -31,7 +31,7 @@ def titan_dircert_file_generator():
     try:
         #List Files in Direct Cert Shared Folder
         dircert_file_list = drive.ListFile(
-            {'q':f"{direct_cert_shared_folder_id} in parents and trashed=false", 
+            {'q':google_drive_query, 
             'corpora': 'teamDrive', 
             'teamDriveId': nutrition_shared_drive_id, 
             'includeTeamDriveItems': True, 
