@@ -1,4 +1,4 @@
-def titan_urban_promis_data_download():
+def titan_urban_promise_data_download():
     ###Import Modules###
     import pandas as pd
     from os import getenv
