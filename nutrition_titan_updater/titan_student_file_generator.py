@@ -10,7 +10,7 @@ def titan_student_file_generator():
     from os import getenv
     from datetime import date
     from dotenv import load_dotenv
-    from titan_urban_promise_data_download import titan_urban_promis_data_download
+    from titan_urban_promise_data_download import titan_urban_promise_data_download
     from dfcleanup import df_stripper #Self Created Module
     #######
     
@@ -76,7 +76,7 @@ def titan_student_file_generator():
         header=None, skiprows=1, dtype=str, on_bad_lines='skip')
     df_charter_students = df_stripper(df_charter_students)
     #Read Urban Promise File to Dataframe
-    urban_promise_download = titan_urban_promis_data_download()
+    urban_promise_download = titan_urban_promise_data_download()
     df_urban_promise_students = urban_promise_download[0]
     log_entry = urban_promise_download[1]
     #Read Allergies File to Dataframe
