@@ -22,6 +22,7 @@ def titan_student_file_generator():
     current_date = date.today()
     student_date = current_date.strftime('%m/%d/%Y')
     earliest_student_start_date = '08/28/2023'
+    #Log Entry
     #File Locations
     student_file_path = getenv('student_file_path')
     charter_student_file_path = getenv('charter_student_file_path')
@@ -77,6 +78,7 @@ def titan_student_file_generator():
     #Read Urban Promise File to Dataframe
     urban_promise_download = titan_urban_promis_data_download()
     df_urban_promise_students = urban_promise_download[0]
+    log_entry = urban_promise_download[1]
     #Read Allergies File to Dataframe
     df_allergies = pd.read_csv(allergy_file_path, dtype=str)
     #Rename the StudentID Field in Allergies DataFrame
@@ -168,4 +170,9 @@ def titan_student_file_generator():
     ###Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
-    return "Titan Student Script Completed"
+    log_entry += "Titan Student Script Completed"
+    return log_entry
+
+if __name__ == "__main__":
+    log_entry = titan_student_file_generator()
+    print(log_entry)
