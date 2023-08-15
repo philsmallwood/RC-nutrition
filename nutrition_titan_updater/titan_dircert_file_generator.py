@@ -39,7 +39,9 @@ def titan_dircert_file_generator():
         if len(dircert_file_list) > 0:
             #Get Direct Cert File IDs
             for file in dircert_file_list:
-                dircert_file_ids.append(file['id'])
+                #Only Grab Files, Not Folders
+                if file['mimeType'] != 'application/vnd.google-apps.folder':
+                    dircert_file_ids.append(file['id'])
             #Extract Direct Cert Data to DataFrame
             for id in dircert_file_ids:
                 file_instance = drive.CreateFile({'id':id})
