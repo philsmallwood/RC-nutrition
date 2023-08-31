@@ -37,7 +37,7 @@ def titan_urban_promise_data_download():
         astype(str).str.zfill(6)
     #Format Student Grade to 2-digits
     df_urban_promise['Student Grade'] = df_urban_promise['Student Grade'].\
-        str.zfill(2)
+        astype(str).str.zfill(2)
     #Fix Kindergarten Grade
     df_urban_promise['Student Grade'] = df_urban_promise['Student Grade'].\
         str.replace('0K','KN')
