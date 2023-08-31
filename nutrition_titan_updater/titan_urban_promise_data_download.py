@@ -42,7 +42,9 @@ def titan_urban_promise_data_download():
     df_urban_promise['Student Grade'] = df_urban_promise['Student Grade'].\
         str.replace('0K','KN')
     #Format Date
-    df_urban_promise['Birthdate'] = pd.to_datetime(df_urban_promise['Birthdate'])
-    df_urban_promise['Birthdate'] = df_urban_promise['Birthdate'].dt.strftime('%m/%d/%Y')
+    df_urban_promise['Birthdate'] = pd.to_datetime(df_urban_promise['Birthdate'], \
+        format='mixed')
+    df_urban_promise['Birthdate'] = df_urban_promise['Birthdate']\
+        .dt.strftime('%m/%d/%Y')
     #######
     return df_urban_promise, log_entry
