@@ -13,7 +13,7 @@ def titan_student_file_generator():
     from titan_urban_promise_data_download import titan_urban_promise_data_download
     from dfcleanup import df_stripper #Self Created Module
     #######
-    
+
     #######
     #####Variables#####
     #Load .ENV File
@@ -80,7 +80,12 @@ def titan_student_file_generator():
     df_urban_promise_students = urban_promise_download[0]
     log_entry = urban_promise_download[1]
     #Read Allergies File to Dataframe
-    df_allergies = pd.read_csv(allergy_file_path, dtype=str)
+    try:
+        df_allergies = pd.read_csv(allergy_file_path, dtype=str)
+    except UnicodeDecodeError:
+        df_allergies = pd.read_csv(allergy_file_path,\
+                                encoding='cp1252',\
+                                dtype=str)
     #Rename the StudentID Field in Allergies DataFrame
     df_allergies.rename(columns=col_names_allergies, inplace=True)
     #Read Language File to Dataframe
@@ -173,7 +178,6 @@ def titan_student_file_generator():
     log_entry += "Titan Student Script Completed\n"
     log_entry += "------------------------------\n"
     return log_entry
-
 if __name__ == "__main__":
-    log_entry = titan_student_file_generator()
-    print(log_entry)
+        log_entry = titan_student_file_generator()
+        print(log_entry)
