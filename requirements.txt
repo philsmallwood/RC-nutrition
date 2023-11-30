@@ -5,4 +5,3 @@ pysftp
 rcmailsend
 rc_google_py
 dfcleanup
-app_logger
