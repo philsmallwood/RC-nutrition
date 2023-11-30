@@ -5,6 +5,7 @@
 def titan_staff_file_generator():
 
     ###Import Modules
+    import csv
     import pandas as pd
     from datetime import date
     from os import getenv
@@ -87,7 +88,9 @@ def titan_staff_file_generator():
     ###Drop Staff with No Location
     df_final = df_final[df_final['HR_Location'] != '320']
     ###Export to data to csv file
-    df_final.to_csv(staff_final_file, index=False)
+    df_final.to_csv(staff_final_file, 
+                    quoting=csv.QUOTE_ALL,
+                    index=False)
     #######
     ###Log Entry###
     log_entry += "---------------------------------\n"
