@@ -14,12 +14,12 @@ import time
 from datetime import date
 from os import getenv
 from dotenv import load_dotenv
-from titan_files_upload import titan_files_upload
-from titan_student_file_generator import titan_student_file_generator
-from titan_staff_file_generator import titan_staff_file_generator
-from titan_dircert_file_generator import titan_dircert_file_generator
+from modules.titan_files_upload import titan_files_upload
+from modules.titan_student_file_generator import titan_student_file_generator
+from modules.titan_staff_file_generator import titan_staff_file_generator
+from modules.titan_dircert_file_generator import titan_dircert_file_generator
 from rc_google_py import write_log_to_google
-from rcmailsend import mail_send #Self Created Module
+from rc_smtp_send import google_smtp_send #Self Created Module
 #######
 
 ###Variables###
@@ -42,6 +42,7 @@ log_file_name = 'TitanDailyUpdaterLog-'
 #Email Alert Vars
 alert_to_email = getenv('log_to_email')
 alert_subject = "Titan Updater - ERROR ALERT"
+smtp_pass = getenv('smtp_pass')
 ###########
 
 ###Function Definitions###
@@ -84,10 +85,14 @@ try:
         log_file_name, date_str)
 except:
     #Email if Error Logging
-    mail_send(alert_to_email,alert_subject)
+    google_smtp_send(alert_to_email, 
+                    alert_subject,
+                    smtp_pass)
 ########
 
 ###Alert if Error###
 if "error" in log_file.lower():
-    mail_send(alert_to_email,alert_subject)
+    google_smtp_send(alert_to_email,
+                    alert_subject, 
+                    smtp_pass)
 ########
