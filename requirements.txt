@@ -2,6 +2,6 @@ pandas
 openpyxl
 python-dotenv
 pysftp
-rcmailsend
+rc_smtp_send
 rc_google_py
 dfcleanup
