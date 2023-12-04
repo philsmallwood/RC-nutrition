@@ -10,7 +10,7 @@ def titan_student_file_generator():
     from os import getenv
     from datetime import date
     from dotenv import load_dotenv
-    from nutrition_titan_updater.modules.titan_urban_promise_data_download import titan_urban_promise_data_download
+    from modules.titan_urban_promise_data_download import titan_urban_promise_data_download
     from dfcleanup import df_stripper #Self Created Module
     #######
 
