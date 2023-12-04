@@ -87,6 +87,8 @@ def titan_staff_file_generator():
     df_final['AssignmentStart'] = staff_date
     ###Drop Staff with No Location
     df_final = df_final[df_final['HR_Location'] != '320']
+    ###Drop Duplicates
+    df_final.drop_duplicates('EmployeeID', inplace=True)
     ###Export to data to csv file
     df_final.to_csv(staff_final_file, 
                     quoting=csv.QUOTE_ALL,
