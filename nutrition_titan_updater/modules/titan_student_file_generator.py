@@ -20,8 +20,9 @@ def titan_student_file_generator():
     load_dotenv()
     #Date
     current_date = date.today()
+    earliest_student_date_object = date(2023,8,28)
     student_date = current_date.strftime('%m/%d/%Y')
-    earliest_student_start_date = '08/28/2023'
+    earliest_student_start_date = earliest_student_date_object.strftime('%m/%d/%Y')
     #Log Entry
     #File Locations
     student_file_path = getenv('student_file_path')
@@ -171,7 +172,7 @@ def titan_student_file_generator():
     ###Add Entry Date
     ##Use the earliest Entry Date if it is before that date
     ##Otherwise, use the current date
-    if earliest_student_start_date > student_date:
+    if earliest_student_date_object > current_date:
         df_final['Enrollment Date'] = earliest_student_start_date
     else:
         df_final['Enrollment Date'] = student_date
