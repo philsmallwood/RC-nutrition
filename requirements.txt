@@ -5,3 +5,5 @@ pysftp
 rc_smtp_send
 rc_google_py
 dfcleanup
+pymysql
+sqlalchemy
