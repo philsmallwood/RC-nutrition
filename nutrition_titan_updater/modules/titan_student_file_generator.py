@@ -1,41 +1,44 @@
-#!/usr/bin/env python3
-###RC Titan Student File Generator Script
-###Script to generate a student file with the necesary info for nutrition
-###Includes Red Clay and Charter students
+### RC Titan Student File Generator Script
+### Script to Generate a Student File for Titan/Linq
+### Includes Red Clay and Charter students
 
 def titan_student_file_generator():
-    ###Import Modules###
+    ### Import Modules ###
     import pandas as pd
     from hashlib import md5
     from os import getenv
     from datetime import date
     from dotenv import load_dotenv
+    from sqlalchemy import create_engine
     from modules.titan_urban_promise_data_download import titan_urban_promise_data_download
-    from dfcleanup import df_stripper #Self Created Module
     #######
 
-    #######
-    #####Variables#####
-    #Load .ENV File
+    ##### Variables #####
+    # Load .ENV File
     load_dotenv()
-    #Date
+    # Date
     current_date = date.today()
     earliest_student_date_object = date(2023,8,28)
     student_date = current_date.strftime('%m/%d/%Y')
     earliest_student_start_date = earliest_student_date_object.strftime('%m/%d/%Y')
-    #Log Entry
-    #File Locations
-    student_file_path = getenv('student_file_path')
-    charter_student_file_path = getenv('charter_student_file_path')
-    allergy_file_path = getenv('allergy_file_path')
-    student_language_file_path = getenv('student_language_file_path')
+    # File Locations
     titan_student_final_file = getenv('titan_student_final_file')
-    #Charter Necessary Columns
+    # MySQL Vars
+    sql_username = getenv('sql_username')
+    sql_pass = getenv('sql_pass')
+    sql_hostname = getenv('sql_hostname')
+    doe_db_name = getenv('doe_db_name')
+    dsc_db_name = getenv('dsc_db_name')
+    student_info_table = getenv('student_info_table')
+    student_lang_table = getenv('student_lang_table')
+    allergy_table = getenv('allergy_table')
+    charter_student_info_table = getenv('charter_student_info_table')
+    # Charter Necessary Columns
     charter_needed_columns = [0, 2, 3, 4, 5, 7, 8, 9, 
         12, 14, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 
         29, 'Street Addr Line & Apt - Physical']
-    ##Set dictionary to rename columns
-    #Charter Dateframe
+    # Dictionaries for Column Name Changes
+    ## Charter Dateframe
     col_names_charter = { 
                 0 : 'Student Building',
                 2 : 'Student Id',
@@ -58,56 +61,60 @@ def titan_student_file_generator():
                 27 : 'Home Phone', 
                 28 : 'Mobile Phone',
                 29 : 'Work Phone'}
-    #Allergies Dataframe
+    ## Allergies Dataframe
     col_names_allergies = {
-        'StudentID':'Student Id'
+        3 : 'Student Id',
+        8 : 'Allergies'
     }
-    #Language Dataframe
+    ## Language Dataframe
     col_names_language = {
         0 : 'Student Id', 
         1 : 'Student Language'
     }
     ############
-    ###Read Files into Dataframes###
-    #Read RC Student File to Dataframe
-    df_rc_students = pd.read_csv(student_file_path, dtype=str)
-    df_rc_students = df_stripper(df_rc_students)
-    #Read Charter School File to Dataframe
-    df_charter_students = pd.read_csv(charter_student_file_path, \
-        encoding='cp1252', \
-        header=None, \
-        skiprows=1, \
-        dtype=str, \
-        usecols=[*range(0,36)])
-    df_charter_students = df_stripper(df_charter_students)
+
+    ### Pull Info from MySQL ###
+    # Create SQL Connection Object - DOE Data
+    engine = create_engine(f'mysql+pymysql://{sql_username}:{sql_pass}@{sql_hostname}/{doe_db_name}')
+    # RC Student Info
+    df_rc_students = pd.read_sql(f'SELECT * FROM {student_info_table}', con=engine)
+    # RC Student Home Language
+    df_languages = pd.read_sql(f'SELECT * FROM {student_lang_table}', con=engine)
+    # Close DOE Data Connection
+    engine.dispose()
+    # Create SQL Connection Object - DSC Data
+    engine = create_engine(f'mysql+pymysql://{sql_username}:{sql_pass}@{sql_hostname}/{dsc_db_name}')
+    # Charter Student Info
+    df_charter_students = pd.read_sql(f'SELECT * FROM {charter_student_info_table}', con=engine)
+    # Allergy Info
+    df_allergies = pd.read_sql(f'SELECT * FROM {allergy_table}', con=engine)
+    # Close DSC Data Connection
+    engine.dispose()
+    ############
+
     #Read Urban Promise File to Dataframe
     urban_promise_download = titan_urban_promise_data_download()
     df_urban_promise_students = urban_promise_download[0]
     log_entry = urban_promise_download[1]
-    #Read Allergies File to Dataframe
-    try:
-        df_allergies = pd.read_csv(allergy_file_path, dtype=str)
-    except UnicodeDecodeError:
-        df_allergies = pd.read_csv(allergy_file_path,\
-                                encoding='cp1252',\
-                                dtype=str)
-    #Rename the StudentID Field in Allergies DataFrame
-    df_allergies.rename(columns=col_names_allergies, inplace=True)
-    #Read Language File to Dataframe
-    df_languages = pd.read_csv(student_language_file_path, dtype=str, \
-        header=None, skiprows=1 )
-    #Rename the StudentID Field in Languages DataFrame
-    df_languages.rename(columns=col_names_language, inplace=True)
     ############
-    ###Format Charter schools dataframe###
-    ###Combine Street Address Line 1 and Apartment to match other sources
+
+    ### Format DataFrames for Combination ###
+    # Allergies
+    df_allergies.columns = range(df_allergies.shape[1])
+    df_allergies.rename(columns=col_names_allergies, inplace=True)
+    # Student Language
+    df_languages.columns = range(df_languages.shape[1])
+    df_languages.rename(columns=col_names_language, inplace=True)
+    # Charter Students
+    df_charter_students.columns = range(df_charter_students.shape[1])
+    ## Combine Street Address Line 1 and Apartment to match other sources
     df_charter_students['Street Addr Line & Apt - Physical'] = \
         df_charter_students[[19, 20]].apply(lambda x: ', '.join(x.dropna()), axis=1)
-    ###Keep the Columns with Necessary Data
+    ## Keep the Columns with Necessary Data
     df_charter_students = df_charter_students[charter_needed_columns]
-    ###Rename the columns to match other sources for later merging
+    ## Rename the columns to match other sources for later merging
     df_charter_students.rename(columns=col_names_charter, inplace=True)
-    ###Change Charter Race codes to match Federal Race codes
+    ## Change Charter Race Codes to match Federal Race codes
     df_charter_students.loc[df_charter_students['Federal Race Code'] == 'Asian', \
         ['Federal Race Code']] = '3' #Asian
     df_charter_students.loc[df_charter_students['Federal Race Code'] == 'White', \
@@ -118,33 +125,34 @@ def titan_student_file_generator():
         ['Federal Race Code']] = '2' #American Indian/Alaskan
     df_charter_students.loc[df_charter_students['Federal Race Code'] == 'Hawaiian', \
         ['Federal Race Code']] = '5' #Native Hawaiian/Other Pacific Islander
-    ###Change Ethnicity to Y or N
+    ## Change Ethnicity to Y or N
     df_charter_students.loc[df_charter_students['Hispanic/Latino Ethnicity'] == \
         'Hispanic', ['Hispanic/Latino Ethnicity']] = 'Y' #Hispanic
     df_charter_students.loc[df_charter_students['Hispanic/Latino Ethnicity'] == \
         'Non-Hispanic', ['Hispanic/Latino Ethnicity']] = 'N' #Non-Hispanic
-    ############
-    ###Format Main Student dataframe###
-    ###Drop Z calendar (320888) and First State School (320530) students
+    # RC Students
+    ## Drop Z calendar (320888) and First State School (320530) students
     df_rc_students = df_rc_students[ (df_rc_students['Current Building'] != '888') & \
         (df_rc_students['Current Building'] != '530') ]
-    df_rc_students['Student Building'] = '320' + df_rc_students['Current Building']
+    ## Add District Code to Building Number
+    df_rc_students['Current Building'] = '320' + df_rc_students['Current Building']
     ############
-    ###Combine all of the Dataframes###
-    ##Add allergies for RC Students to Main
+
+    ### Combine All Dataframes ###
+    # Add Allergies to RC Students
     df_rc_students = df_rc_students.merge(df_allergies[['Student Id', 'Allergies']], \
         on = 'Student Id', how = 'left')
-    ##Add Languages for RC Students to Main
+    # Add Languages to RC Students
     df_rc_students = df_rc_students.merge(df_languages[['Student Id', \
         'Student Language']], on = 'Student Id', how = 'left')
-    ##Add Charter Students to Main
-    df_rc_and_charter_students = df_rc_students.merge(df_charter_students, \
-        how = 'outer')
+    # Add Charter Students to Main
+    df_rc_and_charter_students = pd.concat([df_rc_students, df_charter_students])
     ##Add Urban Promise Students to Main
     df_all_students = pd.concat([df_rc_and_charter_students, df_urban_promise_students])
     ############
-    ###Final Prep and Upload### 
-    ###Reorder to Final Data Frame
+
+    ### Final Prep and Upload ### 
+    # Reorder to Final Data Frame
     df_final = df_all_students[['Student Id', 'Student First Name', \
         'Student Middle Name', 'Student Last Name', 'Student Generation', \
         'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', \
@@ -156,27 +164,35 @@ def titan_student_file_generator():
         'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', \
         'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', \
         'Student Language']].copy()
-    ###Create Household ID Based on Street Address Using Hashlib.md5
+    # Make Student ID 6-digits
+    df_final['Student Id'] = df_final['Student Id'].astype(str).str.zfill(6)
+    # Make Federal Race Code Single Digit
+    df_final['Federal Race Code'] = df_final['Federal Race Code'].str.rstrip('.0')
+    # Format Current Year
+    df_final['Current School Year'] = df_final['Current School Year'].fillna('0')
+    df_final['Current School Year'] = df_final['Current School Year'].astype(int)
+    # Create Household ID Based on Street Address Using Hashlib.md5
     df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].\
         apply(lambda x: md5(x.encode()).hexdigest())
-    ###Make HouseHold ID shorter
+    # Make HouseHold ID shorter
     df_final['HHID'] = df_final['HHID'].astype(str).str[1:16]
-    ###Copy Physical Address to Mailing Address if Blank
-    df_final['Street Addr Line & Apt - Mailing'].fillna(\
-        df_final['Street Addr Line & Apt - Physical'], inplace=True)
-    df_final['City - Mailing'].fillna(df_final['City - Physical'], inplace=True)
-    df_final['State - Mailing'].fillna(df_final['State - Physical'], inplace=True)
-    df_final['Zip - Mailing'].fillna(df_final['Zip - Physical'], inplace=True)
-    ###Fill Guardian Relationship as Guardian if Blank
-    df_final['Relation Name - Guardian'].fillna('Guardian', inplace=True)
-    ###Add Entry Date
-    ##Use the earliest Entry Date if it is before that date
-    ##Otherwise, use the current date
+    # Copy Physical Address to Mailing Address if Blank
+    df_final['Street Addr Line & Apt - Mailing'] = df_final['Street Addr Line & Apt - Mailing'].\
+        fillna(df_final['Street Addr Line & Apt - Physical'])
+    df_final['City - Mailing'] = df_final['City - Mailing'].\
+        fillna(df_final['City - Physical'], inplace=True)
+    df_final['State - Mailing'] = df_final['State - Mailing'].fillna(df_final['State - Physical'])
+    df_final['Zip - Mailing'] = df_final['Zip - Mailing'].fillna(df_final['Zip - Physical'])
+    # Fill Guardian Relationship as Guardian if Blank
+    df_final['Relation Name - Guardian'] = df_final['Relation Name - Guardian'].fillna('Guardian')
+    # Add Entry Date
+    ## Use the earliest Entry Date if it is before that date
+    ## Otherwise, use the current date
     if earliest_student_date_object > current_date:
         df_final['Enrollment Date'] = earliest_student_start_date
     else:
         df_final['Enrollment Date'] = student_date
-    ###Export to data to csv file
+    # Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
     log_entry += "------------------------------\n"
