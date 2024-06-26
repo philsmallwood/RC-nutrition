@@ -45,6 +45,7 @@ def titan_staff_file_generator():
     df_final['MiddleName'] = df_employee_info['middleName']
     df_final['LastName'] = df_employee_info['sn']
     df_final['EmailAddress'] = df_employee_info['userPrincipalName'].str.lower()
+    df_final['StaffStateID'] = 'E' + df_employee_info['employeeID']
     df_final['Dob'] = df_employee_info['extensionAttribute1']
     df_final['HR_Gender'] = df_employee_info['extensionAttribute9']
     df_final['HR_Location'] = '320' + df_employee_info['departmentNumber'].astype('Int64').astype('str')
