@@ -164,10 +164,14 @@ def titan_student_file_generator():
         'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', \
         'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', \
         'Student Language']].copy()
+    # Reset Index
+    df_final.reset_index(inplace = True)
     # Make Student ID 6-digits
     df_final['Student Id'] = df_final['Student Id'].astype(str).str.zfill(6)
     # Make Federal Race Code Single Digit
     df_final['Federal Race Code'] = df_final['Federal Race Code'].str.rstrip('.0')
+    # Remove 'Nan'
+    df_final['Alternate Building'] = df_final['Alternate Building'].str.replace("nan","")
     # Format Current Year
     df_final['Current School Year'] = df_final['Current School Year'].fillna('0')
     df_final['Current School Year'] = df_final['Current School Year'].astype(int)
@@ -192,6 +196,8 @@ def titan_student_file_generator():
         df_final['Enrollment Date'] = earliest_student_start_date
     else:
         df_final['Enrollment Date'] = student_date
+    # Drop Duplicates
+    df_final['Student Id'] = df_final['Student Id'].drop_duplicates()
     # Export to data to csv file
     df_final.to_csv(titan_student_final_file, index=False)
     ############
