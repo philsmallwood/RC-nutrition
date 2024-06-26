@@ -10,7 +10,7 @@ def titan_student_file_generator():
     from datetime import date
     from dotenv import load_dotenv
     from sqlalchemy import create_engine
-    from modules.titan_urban_promise_data_download import titan_urban_promise_data_download
+    from titan_urban_promise_data_download import titan_urban_promise_data_download
     #######
 
     ##### Variables #####
