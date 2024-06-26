@@ -165,7 +165,7 @@ def titan_student_file_generator():
         'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', \
         'Student Language']].copy()
     # Reset Index
-    df_final.reset_index(inplace = True)
+    df_final.reset_index(inplace = True, drop = True)
     # Make Student ID 6-digits
     df_final['Student Id'] = df_final['Student Id'].astype(str).str.zfill(6)
     # Make Federal Race Code Single Digit
