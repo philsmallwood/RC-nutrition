@@ -42,7 +42,7 @@ def titan_staff_file_generator():
     df_final = pd.DataFrame()
     df_final['EmployeeID'] = 'E' + df_employee_info['employeeID']
     df_final['FirstName'] = df_employee_info['givenName']
-    df_final['MiddleName'] = df_employee_info['middleName'].str[0]
+    df_final['MiddleName'] = ""
     df_final['LastName'] = df_employee_info['sn']
     df_final['EmailAddress'] = df_employee_info['userPrincipalName'].str.lower()
     df_final['StaffStateID'] = 'E' + df_employee_info['employeeID']
