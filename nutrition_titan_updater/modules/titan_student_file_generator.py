@@ -18,7 +18,7 @@ def titan_student_file_generator():
     load_dotenv()
     # Date
     current_date = date.today()
-    earliest_student_date_object = date(2023,8,28)
+    earliest_student_date_object = date(2024,8,26)
     student_date = current_date.strftime('%m/%d/%Y')
     earliest_student_start_date = earliest_student_date_object.strftime('%m/%d/%Y')
     # File Locations
