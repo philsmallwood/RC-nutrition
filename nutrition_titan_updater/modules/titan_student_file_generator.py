@@ -64,7 +64,8 @@ def titan_student_file_generator():
     ## Allergies Dataframe
     col_names_allergies = {
         3 : 'Student Id',
-        8 : 'Allergies'
+        8 : 'Allergies', 
+        9 : 'FoodIntolerance'
     }
     ## Language Dataframe
     col_names_language = {
@@ -140,7 +141,7 @@ def titan_student_file_generator():
 
     ### Combine All Dataframes ###
     # Add Allergies to RC Students
-    df_rc_students = df_rc_students.merge(df_allergies[['Student Id', 'Allergies']], \
+    df_rc_students = df_rc_students.merge(df_allergies[['Student Id', 'Allergies', 'FoodIntolerance']], \
         on = 'Student Id', how = 'left')
     # Add Languages to RC Students
     df_rc_students = df_rc_students.merge(df_languages[['Student Id', \
@@ -155,7 +156,7 @@ def titan_student_file_generator():
     # Reorder to Final Data Frame
     df_final = df_all_students[['Student Id', 'Student First Name', \
         'Student Middle Name', 'Student Last Name', 'Student Generation', \
-        'Allergies', 'Birthdate', 'Student Gender', 'Federal Race Code', \
+        'Allergies', 'FoodIntolerance', 'Birthdate', 'Student Gender', 'Federal Race Code', \
         'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', \
         'Student Building', 'Student Grade', 'Student Homeroom Primary', \
         'Street Addr Line & Apt - Physical', 'City - Physical', \

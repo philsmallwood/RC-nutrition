@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 ### Titan Update Main Script
 ### Script to call the various sub-scripts that 
 ### create create, fix, and upload files for 
@@ -23,23 +22,23 @@ from rc_smtp_send import google_smtp_send #Self Created Module
 #######
 
 ###Variables###
-#Load .ENV File
+# Load .ENV File
 load_dotenv()
-#Date
+# Date
 current_date = date.today()
 date_str = current_date.strftime('%m-%d-%Y')
 start_time = time.ctime()
-#Scripts
+# Scripts
 script_list = [titan_dircert_file_generator, titan_student_file_generator,
     titan_staff_file_generator, titan_files_upload]
-#Google Info
+# Google Info
 google_auth_key = getenv('google_auth_key')
 network_team_drive_id = getenv('network_team_drive_id')
 titan_log_folder_id = getenv('titan_log_folder_id')
-#Log Vars
+# Log Vars
 log_file = str()
 log_file_name = 'TitanDailyUpdaterLog-'
-#Email Alert Vars
+# Email Alert Vars
 alert_to_email = getenv('log_to_email')
 alert_subject = "Titan Updater - ERROR ALERT"
 smtp_pass = getenv('smtp_pass')
