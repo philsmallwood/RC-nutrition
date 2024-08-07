@@ -158,7 +158,7 @@ def titan_student_file_generator():
         'Student Middle Name', 'Student Last Name', 'Student Generation', \
         'Allergies', 'FoodIntolerance', 'Birthdate', 'Student Gender', 'Federal Race Code', \
         'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', \
-        'Student Building', 'Student Grade', 'Student Homeroom Primary', \
+        'Current Building', 'Student Grade', 'Student Homeroom Primary', \
         'Street Addr Line & Apt - Physical', 'City - Physical', \
         'State - Physical', 'Zip - Physical', 'Street Addr Line & Apt - Mailing', \
         'City - Mailing', 'State - Mailing', 'Zip - Mailing', 'First Name - Guardian', \
