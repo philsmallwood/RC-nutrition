@@ -171,6 +171,7 @@ def titan_student_file_generator():
     df_final['Student Id'] = df_final['Student Id'].astype(str).str.zfill(6)
     # Make Federal Race Code Single Digit
     df_final['Federal Race Code'] = df_final['Federal Race Code'].str.rstrip('.0')
+    df_final['Federal Race Code'] = df_final['Federal Race Code'].fillna("")
     # Remove 'Nan'
     df_final['Alternate Building'] = df_final['Alternate Building'].str.replace("nan","")
     # Format Current Year
