@@ -40,7 +40,7 @@ def titan_student_file_generator():
     # Dictionaries for Column Name Changes
     ## Charter Dateframe
     col_names_charter = { 
-                0 : 'Student Building',
+                0 : 'Current Building',
                 2 : 'Student Id',
                 3 : 'Student Last Name',
                 4 : 'Student First Name', 
