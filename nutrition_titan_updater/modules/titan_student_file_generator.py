@@ -148,13 +148,11 @@ def titan_student_file_generator():
         'Student Language']], on = 'Student Id', how = 'left')
     # Add Charter Students to Main
     df_rc_and_charter_students = pd.concat([df_rc_students, df_charter_students])
-    ##Add Urban Promise Students to Main
-    df_all_students = pd.concat([df_rc_and_charter_students, df_urban_promise_students])
     ############
 
     ### Final Prep and Upload ### 
     # Reorder to Final Data Frame
-    df_final = df_all_students[['Student Id', 'Student First Name', \
+    df_final = df_rc_and_charter_students[['Student Id', 'Student First Name', \
         'Student Middle Name', 'Student Last Name', 'Student Generation', \
         'Allergies', 'FoodIntolerance', 'Birthdate', 'Student Gender', 'Federal Race Code', \
         'Hispanic/Latino Ethnicity', 'Alternate Building', 'Current School Year', \
@@ -165,19 +163,17 @@ def titan_student_file_generator():
         'Middle Name - Guardian', 'Last Name - Guardian', 'Mobile Phone', \
         'Home Phone', 'Work Phone', 'Email - Guardian', 'Relation Name - Guardian', \
         'Student Language']].copy()
-    # Reset Index
-    df_final.reset_index(inplace = True, drop = True)
     # Make Student ID 6-digits
     df_final['Student Id'] = df_final['Student Id'].astype(str).str.zfill(6)
+    # Format Current Year
+    df_final['Current School Year'] = df_final['Current School Year'].astype(str).str.rstrip('.0')
+    df_final['Current School Year'] = df_final['Current School Year'].str.replace("nan","")
     # Make Federal Race Code Single Digit
     df_final['Federal Race Code'] = df_final['Federal Race Code'].str.rstrip('.0')
     df_final['Federal Race Code'] = df_final['Federal Race Code'].fillna("")
     df_final['Federal Race Code'] = df_final['Federal Race Code'].str.replace("nan","")
     # Remove 'Nan'
     df_final['Alternate Building'] = df_final['Alternate Building'].str.replace("nan","")
-    # Format Current Year
-    df_final['Current School Year'] = df_final['Current School Year'].fillna('0')
-    df_final['Current School Year'] = df_final['Current School Year'].astype(int)
     # Create Household ID Based on Street Address Using Hashlib.md5
     df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].\
         apply(lambda x: md5(x.encode()).hexdigest())
@@ -198,6 +194,10 @@ def titan_student_file_generator():
         df_final['Enrollment Date'] = earliest_student_start_date
     else:
         df_final['Enrollment Date'] = student_date
+    ## Add Urban Promise
+    df_final = pd.concat([df_final, df_urban_promise_students])
+    # Reset Index
+    df_final.reset_index(inplace = True, drop = True)
     # Drop Duplicates
     df_final['Student Id'] = df_final['Student Id'].drop_duplicates()
     # Export to data to csv file
@@ -207,6 +207,7 @@ def titan_student_file_generator():
     log_entry += "Titan Student Script Completed\n"
     log_entry += "------------------------------\n"
     return log_entry
+
 if __name__ == "__main__":
         log_entry = titan_student_file_generator()
         print(log_entry)
