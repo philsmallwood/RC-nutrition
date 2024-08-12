@@ -184,8 +184,7 @@ def titan_student_file_generator():
     # Copy Physical Address to Mailing Address if Blank
     df_final['Street Addr Line & Apt - Mailing'] = df_final['Street Addr Line & Apt - Mailing'].\
         fillna(df_final['Street Addr Line & Apt - Physical'])
-    df_final['City - Mailing'] = df_final['City - Mailing'].\
-        fillna(df_final['City - Physical'], inplace=True)
+    df_final['City - Mailing'] = df_final['City - Mailing'].fillna(df_final['City - Physical'])
     df_final['State - Mailing'] = df_final['State - Mailing'].fillna(df_final['State - Physical'])
     df_final['Zip - Mailing'] = df_final['Zip - Mailing'].fillna(df_final['Zip - Physical'])
     # Fill Guardian Relationship as Guardian if Blank
