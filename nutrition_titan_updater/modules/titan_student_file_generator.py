@@ -4,6 +4,7 @@
 
 def titan_student_file_generator():
     ### Import Modules ###
+    import csv
     import pandas as pd
     from hashlib import md5
     from os import getenv
@@ -201,7 +202,9 @@ def titan_student_file_generator():
     # Drop Duplicates
     df_final['Student Id'] = df_final['Student Id'].drop_duplicates()
     # Export to data to csv file
-    df_final.to_csv(titan_student_final_file, index=False)
+    df_final.to_csv(titan_student_final_file, 
+                    quoting=csv.QUOTE_ALL,
+                    index=False)
     ############
     log_entry += "------------------------------\n"
     log_entry += "Titan Student Script Completed\n"
