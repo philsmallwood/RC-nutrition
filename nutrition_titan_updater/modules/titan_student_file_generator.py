@@ -177,7 +177,7 @@ def titan_student_file_generator():
     df_final['Alternate Building'] = df_final['Alternate Building'].str.replace("nan","")
     # Create Household ID Based on Street Address Using Hashlib.md5
     df_final['HHID'] = df_final['Street Addr Line & Apt - Physical'].\
-        apply(lambda x: md5(x.encode()).hexdigest())
+        apply(lambda x: md5(x.encode()).hexdigest() if x else None)
     # Make HouseHold ID shorter
     df_final['HHID'] = df_final['HHID'].astype(str).str[1:16]
     # Copy Physical Address to Mailing Address if Blank
