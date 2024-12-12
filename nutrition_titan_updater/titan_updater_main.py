@@ -30,7 +30,7 @@ logger.info("Titan Updater Script Started")
 
 ###Variables###
 # Load .ENV File
-load_dotenv()
+load_dotenv('/config_files/env_file/.env')
 # Date
 current_date = date.today()
 date_str = current_date.strftime('%m-%d-%Y')
