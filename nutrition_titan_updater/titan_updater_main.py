@@ -36,8 +36,7 @@ current_date = date.today()
 date_str = current_date.strftime('%m-%d-%Y')
 start_time = time.ctime()
 # Google Info
-#google_auth_key = getenv('google_auth_key')
-google_auth_key = './oauth2service.json'
+google_auth_key = getenv('google_auth_key')
 network_team_drive_id = getenv('network_team_drive_id')
 nutrition_shared_drive_id = getenv('nutrition_shared_drive_id')
 direct_cert_shared_folder_id = getenv('direct_cert_shared_folder_id')
