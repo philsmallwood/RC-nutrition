@@ -130,7 +130,7 @@ try:
                                                     df_charter_students, 
                                                     df_allergies, 
                                                     df_urban_promise, 
-                                                    titan_staff_final_file)
+                                                    titan_student_final_file)
     # Log Entry
     logger.info("Student File Generated")
 except:
