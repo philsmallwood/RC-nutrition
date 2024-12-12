@@ -1,7 +1,7 @@
 ### Python App Docker Image
 
 ### Stage 1 
-FROM python:3.12-slim as builder
+FROM python:3.13-slim AS builder
 
 # Create App Directory
 WORKDIR /app
@@ -31,7 +31,7 @@ RUN . venv/bin/activate && \
         --extra-index-url https://${API_TOKEN}@git.redclay.k12.de.us/api/packages/Philip.Smallwood/pypi/simple
 
 ### Stage 2
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # Install Run Dependencies
 RUN true \
