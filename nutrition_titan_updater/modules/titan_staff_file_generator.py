@@ -2,7 +2,7 @@
 ### Script to Generate a Staff File 
 ### to Upload to Titan/LINQ
 
-def titan_staff_file_generator(df_employee_info, staff_final_file):
+def titan_staff_file_generator(df_employee_info, titan_staff_final_file):
 
     ###Import Modules
     import csv
@@ -38,7 +38,7 @@ def titan_staff_file_generator(df_employee_info, staff_final_file):
     ########
 
     ### Export CSV File ###
-    df_final.to_csv(staff_final_file, 
+    df_final.to_csv(titan_staff_final_file, 
                     quoting=csv.QUOTE_ALL,
                     index=False)
     #######
