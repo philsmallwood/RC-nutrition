@@ -76,7 +76,7 @@ def titan_student_file_generator(df_rc_students,
     df_charter_students['Street Addr Line & Apt - Physical'] = \
         df_charter_students[[19, 20]].apply(lambda x: ', '.join(x.dropna()), axis=1)
     ## Keep the Columns with Necessary Data
-    df_charter_students = df_charter_students[charter_needed_columns]
+    df_charter_students = df_charter_students[charter_needed_columns].copy()
     ## Rename the columns to match other sources for later merging
     df_charter_students.rename(columns=col_names_charter, inplace=True)
     ## Change Charter Race Codes to match Federal Race codes
@@ -98,7 +98,7 @@ def titan_student_file_generator(df_rc_students,
     # RC Students
     ## Drop Z calendar (320888) and First State School (320530) students
     df_rc_students = df_rc_students[ (df_rc_students['Current Building'] != '888') & \
-        (df_rc_students['Current Building'] != '530') ]
+        (df_rc_students['Current Building'] != '530') ].copy()
     ## Add District Code to Building Number
     df_rc_students['Current Building'] = '320' + df_rc_students['Current Building']
     ############
