@@ -2,38 +2,26 @@
 ### Script to Generate a Student File for Titan/Linq
 ### Includes Red Clay and Charter students
 
-def titan_student_file_generator():
+def titan_student_file_generator(df_rc_students,
+                                df_languages,
+                                df_charter_students,
+                                df_allergies,
+                                df_urban_promise_students,
+                                titan_student_final_file):
+    
     ### Import Modules ###
     import csv
     import pandas as pd
     from hashlib import md5
-    from os import getenv
     from datetime import date
-    from dotenv import load_dotenv
-    from sqlalchemy import create_engine
-    from modules.titan_urban_promise_data_download import titan_urban_promise_data_download
     #######
 
     ##### Variables #####
-    # Load .ENV File
-    load_dotenv()
     # Date
     current_date = date.today()
     earliest_student_date_object = date(2024,8,26)
     student_date = current_date.strftime('%m/%d/%Y')
     earliest_student_start_date = earliest_student_date_object.strftime('%m/%d/%Y')
-    # File Locations
-    titan_student_final_file = getenv('titan_student_final_file')
-    # MySQL Vars
-    sql_username = getenv('sql_username')
-    sql_pass = getenv('sql_pass')
-    sql_hostname = getenv('sql_hostname')
-    doe_db_name = getenv('doe_db_name')
-    dsc_db_name = getenv('dsc_db_name')
-    student_info_table = getenv('student_info_table')
-    student_lang_table = getenv('student_lang_table')
-    allergy_table = getenv('allergy_table')
-    charter_student_info_table = getenv('charter_student_info_table')
     # Charter Necessary Columns
     charter_needed_columns = [0, 2, 3, 4, 5, 7, 8, 9, 
         12, 14, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 
@@ -73,31 +61,6 @@ def titan_student_file_generator():
         0 : 'Student Id', 
         1 : 'Student Language'
     }
-    ############
-
-    ### Pull Info from MySQL ###
-    # Create SQL Connection Object - DOE Data
-    engine = create_engine(f'mysql+pymysql://{sql_username}:{sql_pass}@{sql_hostname}/{doe_db_name}')
-    # RC Student Info
-    df_rc_students = pd.read_sql(f'SELECT * FROM {student_info_table}', con=engine)
-    # RC Student Home Language
-    df_languages = pd.read_sql(f'SELECT * FROM {student_lang_table}', con=engine)
-    # Close DOE Data Connection
-    engine.dispose()
-    # Create SQL Connection Object - DSC Data
-    engine = create_engine(f'mysql+pymysql://{sql_username}:{sql_pass}@{sql_hostname}/{dsc_db_name}')
-    # Charter Student Info
-    df_charter_students = pd.read_sql(f'SELECT * FROM {charter_student_info_table}', con=engine)
-    # Allergy Info
-    df_allergies = pd.read_sql(f'SELECT * FROM {allergy_table}', con=engine)
-    # Close DSC Data Connection
-    engine.dispose()
-    ############
-
-    #Read Urban Promise File to Dataframe
-    urban_promise_download = titan_urban_promise_data_download()
-    df_urban_promise_students = urban_promise_download[0]
-    log_entry = urban_promise_download[1]
     ############
 
     ### Format DataFrames for Combination ###
@@ -206,11 +169,5 @@ def titan_student_file_generator():
                     quoting=csv.QUOTE_ALL,
                     index=False)
     ############
-    log_entry += "------------------------------\n"
-    log_entry += "Titan Student Script Completed\n"
-    log_entry += "------------------------------\n"
-    return log_entry
 
-if __name__ == "__main__":
-        log_entry = titan_student_file_generator()
-        print(log_entry)
+    return df_final
