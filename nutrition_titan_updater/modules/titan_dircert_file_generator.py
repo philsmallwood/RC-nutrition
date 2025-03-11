@@ -61,6 +61,8 @@ def titan_dircert_file_generator(google_auth_key,
     df_final['Type'] = df_dircerts['Type']
     df_final['Entry_Date'] = pd.to_datetime(df_dircerts['Entry_Date'])
     df_final['Entry_Date'] = df_final['Entry_Date'].dt.strftime('%m/%d/%Y')
+    # Drop Duplicates
+    df_final.drop_duplicates(inplace=True)
     # Export Final DataFrame to File
     df_final.to_csv(direct_cert_file_path, index=False)
     # Return Message
