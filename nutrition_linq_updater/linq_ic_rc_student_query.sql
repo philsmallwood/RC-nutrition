@@ -47,6 +47,8 @@ LEFT JOIN v_CensusContactSummary c ON c.personGUID = s.personGUID AND
   c.guardian = 1 AND
   c.relatedBy = 'household'
 WHERE s.activeYear = 1 AND
-  s.startDate > '2025-06-30' AND
+  s.startDate > s.calendarStart - 1 AND
   (s.endDate >= GETDATE() OR s.endDate IS NULL) AND
-  s.studentNumber IS NOT NULL;
+  s.studentNumber IS NOT NULL AND
+  s.calendarName NOT LIKE '%888%' AND
+  s.calendarName NOT LIKE '%530%';
