@@ -59,6 +59,7 @@ engine.dispose()
 ### Merge DataFrames ###
 # Format Student IDs for Merging
 df_student_allergies['Student Id'] = df_student_allergies['Student Id'].astype(str)
+df_ic_charter_students['Student Id'] = df_ic_charter_students['Student Id'].astype(str)
 # Merge DataFrames
 df_ic_rc_students = pd.merge(df_ic_rc_students, df_student_allergies, how='left', on='Student Id')
 df_students_all = pd.concat([df_ic_rc_students, df_ic_charter_students], ignore_index=True)
