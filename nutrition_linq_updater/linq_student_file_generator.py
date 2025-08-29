@@ -30,7 +30,7 @@ def linq_student_file_generator(env_file):
     sql_hostname = getenv('sql_hostname')
     dsc_db_name = getenv('dsc_db_name')
     # IC Vars
-    mssql_driver = 'ODBC Driver 18 for SQL Server'
+    mssql_driver = 'FreeTDS'
     ic_db_hostname = getenv('ic_db_hostname')
     ic_db_username = getenv('ic_db_username')
     ic_db_pass = getenv('ic_db_pass')

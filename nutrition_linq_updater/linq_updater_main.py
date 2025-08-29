@@ -13,7 +13,7 @@ from rc_smtp_send import google_smtp_send
 ###########
 
 ### Variables ###
-env_file = './.env'
+env_file = '/config_files/env_file/.env'
 load_dotenv(env_file)
 # File Vars
 today_str = datetime.datetime.now().strftime('%Y-%m-%d')
