@@ -58,7 +58,7 @@ try:
         sftp_upload(sftp_hostname,
                     sftp_username,
                     sftp_password,
-                    f"{final_file_path.name}/{upfile.name}",
+                    f"{local_path}{upfile.name}",
                     f"{upload_path}{upfile.name}")
         logger.info(f"Uploaded {upfile.name} to {upload_path}")
     # Logging for SFTP Upload
