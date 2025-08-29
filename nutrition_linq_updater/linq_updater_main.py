@@ -18,7 +18,7 @@ load_dotenv(env_file)
 # File Vars
 today_str = datetime.datetime.now().strftime('%Y-%m-%d')
 final_file_path = Path(getenv('final_file_path'))
-local_path = ('final_file_path')
+local_path = getenv('final_file_path')
 log_path = getenv('log_path')
 log_file = f"{log_path}/linq_updater_{today_str}.log"
 # SFTP Vars
