@@ -38,7 +38,8 @@ RUN true \
     && apt-get update \
     && apt-get install -y \
     cron \
-    tzdata
+    tzdata \
+    freetds-dev freetds-bin tdsodbc unixodbc unixodbc-dev
 
 # Upgrade Pip
 RUN pip3 install --upgrade pip
@@ -60,6 +61,8 @@ RUN mkdir -p ./key_file
 RUN mkdir -p ./env_file
 
 RUN mkdir -p ./export_files
+
+RUN mkdir -p ./log_file
 
 # Create Cron Job Directory
 RUN mkdir -p /etc/cron.d
