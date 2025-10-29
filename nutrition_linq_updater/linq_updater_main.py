@@ -25,6 +25,7 @@ sftp_hostname = getenv('sftp_hostname')
 sftp_username = getenv('sftp_username')
 sftp_password = getenv('sftp_password')
 upload_path = '/'
+local_path = getenv('final_file_path')
 # Email Vars
 alert_email = getenv('alert_email')
 subject = f"!! Linq Nutrition Updater Error {today_str} !!"
