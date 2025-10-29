@@ -15,7 +15,7 @@ SELECT DISTINCT s.studentNumber AS "Student Id",
         CHARINDEX(')', s.calendarName) - CHARINDEX('(', s.calendarName) - 1
    ) AS "Current Building",
    s.grade AS "Student Grade", 
-   '' AS "Student Homeroom Primary", 
+   rm.name AS "Student Homeroom Primary", 
    c.addressLine1 AS 'Street Addr Line & Apt - Physical', 
    c.city AS "City - Physical", 
    c.state AS "State - Physical",
@@ -46,6 +46,14 @@ LEFT JOIN v_CensusContactSummary c ON c.personGUID = s.personGUID AND
   c.seq = 1 AND
   c.guardian = 1 AND
   c.relatedBy = 'household'
+LEFT JOIN (
+    SELECT r.personID, rm.name
+    FROM Roster r
+    INNER JOIN v_ClassSection cs 
+        ON cs.sectionID = r.sectionID AND cs.courseNumber = '8889'
+    INNER JOIN Room rm 
+        ON rm.roomID = cs.roomID
+WHERE (r.endDate >= GETDATE() OR r.endDate IS NULL) AND (r.startDate <= GETDATE() OR r.startDate IS NOT NULL)  AND cs.teacherPersonID IS NOT NULL) rm ON rm.personID = s.personID
 WHERE s.activeYear = 1 AND
   s.startDate > s.calendarStart - 1 AND
   (s.endDate >= GETDATE() OR s.endDate IS NULL) AND
