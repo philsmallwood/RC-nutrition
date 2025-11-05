@@ -110,7 +110,7 @@ def linq_student_file_generator(env_file):
     ### Merge DataFrames ###
     try:
         # Format Student IDs for Merging
-        df_student_allergies['Student Id'] = df_student_allergies['Student Id'].astype(str)
+        #df_student_allergies['Student Id'] = df_student_allergies['Student Id'].astype(str)
         df_ic_charter_students['Student Id'] = df_ic_charter_students['Student Id'].astype(str)
         df_urban_promise['Student Id'] = df_urban_promise['Student Id'].astype(str)
         df_poa_students['Student Id'] = df_poa_students['Student Id'].astype(str)
