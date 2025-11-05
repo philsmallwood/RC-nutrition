@@ -80,7 +80,7 @@ def linq_student_file_generator(env_file):
         # Store Charter Student Data in DataFrame
         df_ic_charter_students = pd.read_sql_query(linq_charter_student_query, engine)
         # Store Student Allergy Data in DataFrame
-        df_student_allergies = pd.read_sql_query(linq_student_allergy_query, engine)
+        df_student_allergies = pd.DataFrame()
         # Close Connection
         engine.dispose()
         # Log Success
@@ -115,7 +115,7 @@ def linq_student_file_generator(env_file):
         df_urban_promise['Student Id'] = df_urban_promise['Student Id'].astype(str)
         df_poa_students['Student Id'] = df_poa_students['Student Id'].astype(str)
         # Merge DataFrames
-        df_ic_rc_students = pd.merge(df_ic_rc_students, df_student_allergies, how='left', on='Student Id')
+        #df_ic_rc_students = pd.merge(df_ic_rc_students, df_student_allergies, how='left', on='Student Id')
         df_students_all = pd.concat([df_ic_rc_students, df_ic_charter_students, df_poa_students, df_urban_promise], ignore_index=True)
         # Drop Duplicates Students
         df_students_all = df_students_all.drop_duplicates(subset='Student Id').copy()
