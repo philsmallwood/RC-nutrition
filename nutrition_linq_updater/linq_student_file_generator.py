@@ -119,8 +119,6 @@ def linq_student_file_generator(env_file):
         df_students_all = pd.concat([df_ic_rc_students, df_ic_charter_students, df_poa_students, df_urban_promise], ignore_index=True)
         # Drop Duplicates Students
         df_students_all = df_students_all.drop_duplicates(subset='Student Id').copy()
-        # Set Student ID to 6 Digits
-        df_students_all['Student Id'] = df_students_all['Student Id'].str.zfill(6)
         # Fix Year
         df_students_all['Current School Year'] = df_students_all['Current School Year'].fillna(0).astype(int)
         # Log Success
