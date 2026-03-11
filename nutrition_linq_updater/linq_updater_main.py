@@ -9,11 +9,11 @@ from os import getenv
 from dotenv import load_dotenv
 from linq_student_file_generator import linq_student_file_generator
 from sftp_utils import sftp_upload
-from rc_smtp_send import google_smtp_send
+from google_smtp_send import google_smtp_send
 ###########
 
 ### Variables ###
-env_file = '/config_files/env_file/.env'
+env_file = '.env'
 load_dotenv(env_file)
 # File Vars
 today_str = datetime.datetime.now().strftime('%Y-%m-%d')
