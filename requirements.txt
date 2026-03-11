@@ -2,9 +2,9 @@ pandas
 openpyxl
 python-dotenv
 pysftp
-rc_smtp_send
-rc_google_py
 pymysql
 pyodbc
 paramiko
 sqlalchemy
+gspread
+google-auth
