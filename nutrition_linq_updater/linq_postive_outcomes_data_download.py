@@ -2,7 +2,7 @@ def linq_positive_outcomes_data_download(google_auth_key, positive_outcomes_shee
 
     ### Import Modules ###
     import pandas as pd
-    from rc_google_py import download_gsheet_to_df
+    from download_gsheet_to_df import download_gsheet_to_df
     #######
 
     ###Get Postive Outcomes Academy Student Data###

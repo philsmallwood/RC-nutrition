@@ -2,7 +2,7 @@ def linq_urban_promise_data_download(google_auth_key, urban_promise_sheet_id):
     
     ### Import Modules ###
     import pandas as pd
-    from rc_google_py import download_gsheet_to_df
+    from download_gsheet_to_df import download_gsheet_to_df
     #######
 
     ### Get Urban Promise Student Data###
