@@ -1,0 +1,10 @@
+pandas
+openpyxl
+python-dotenv
+pysftp
+pymysql
+pyodbc
+paramiko
+sqlalchemy
+gspread
+google-auth

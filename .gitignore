@@ -2,7 +2,6 @@
 gmail_token.json
 client_secret.json
 .UMRA
-*log*
 vminventory-*.csv
 .DS_Store
 __pycache__
@@ -11,3 +10,4 @@ build
 *.egg-info
 .env*
 *_env/
+venv/

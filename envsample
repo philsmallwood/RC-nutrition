@@ -30,7 +30,7 @@ titan_student_final_file = FILE_NAME
 staff_file = FILE_NAME
 staff_email_file = FILE_NAME
 contractor_file = FILE_NAME
-staff_final_file = FILE_NAME
+titan_staff_final_file = FILE_NAME
 [DirectCert]
 direct_cert_file_path = FILE_NAME
 [Google]
